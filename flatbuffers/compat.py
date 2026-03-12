@@ -16,7 +16,7 @@
  compatibility helpers for numpy. """
 
 import sys
-import imp
+import importlib.util
 
 PY2 = sys.version_info[0] == 2
 PY26 = sys.version_info[0:2] == (2, 6)
@@ -53,7 +53,7 @@ def import_numpy():
     otherwise returns None.
     """
     try:
-        imp.find_module('numpy')
+        importlib.util.find_spec("numpy")
         numpy_exists = True
     except ImportError:
         numpy_exists = False
