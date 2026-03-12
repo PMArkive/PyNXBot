@@ -149,8 +149,9 @@ class NXBot(object):
         self.click("A")
         self.pause(1.3)
 
-    def enterGame(self):
-        print("\nStarting the game")
+    def enterGame(self, verbose=True):
+        if verbose:
+            print("\nStarting the game")
         self.click("A")
         self.pause(0.2)
         self.click("A")
@@ -469,3 +470,55 @@ class BDSPBot(NXBot):
     def readTrainerBlock(self):
         trainerBlockPointer = f"[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+E8"
         return self.read_pointer(trainerBlockPointer, 8)
+
+class FRLGBot(NXBot):
+        PK9FRLGPARTYSIZE = 0x64
+        PK9FRLGBOXSIZE = 0x50
+
+        def __init__(self,ip,port = 6000):
+                NXBot.__init__(self,ip,port)
+                '''from structure import MyStatus8
+                self.TrainerSave = MyStatus8(self.readTrainerBlock())
+                self.eventoffset = 0
+                if self.TrainerSave.isPokemonSave():
+                        print(f"Game:{self.TrainerSave.GameVersion()} OT: {self.TrainerSave.OT()} ID:{self.TrainerSave.displayID()}\n")
+                        self.isPlayingSword = self.TrainerSave.isSword()
+                        self.getEventOffset(self.getSystemLanguage())
+                        self.TID = self.TrainerSave.TID()
+                        self.SID = self.TrainerSave.SID()'''
+
+        def readTrainerBlock(self):
+            trainerBlockPointer = f"[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+E8"
+            return self.read_pointer(trainerBlockPointer, 8)
+
+        def getInitialSeed(self):
+            return int.from_bytes(self.read(0x1208000, 2), "little")
+
+        def getCurrentSeed(self):
+            return int.from_bytes(self.read(0xBD68D220, 4), "little")
+
+        def readTrainerBlock(self):
+                return self.read(0x45061108, 0x110)
+
+        def readParty(self,slot=1):
+                if slot > 5:
+                        slot = 5
+                address = 0x450BE8C0 + slot * self.PK9FRLGPARTYSIZE
+                return self.read(address,self.PK9FRLGPARTYSIZE)
+
+        def readBox(self,box = 0,slot = 0):
+                if box > 13:
+                        box = 13
+                if slot > 29:
+                        slot = 29
+                address = 0x4506D890 + box * 30 + slot * self.PK9FRLGBOXSIZE
+                return self.read(address,self.PK9FRLGBOXSIZE)
+
+        def readTrade(self):
+                return self.read(0xAF285F68,self.PK9FRLGPARTYSIZE)
+
+        def readWild(self):
+                return self.read(0x8FEA3358,self.PK9FRLGPARTYSIZE)
+
+        def readLegend(self):
+                return self.read(0x886BC058,self.PK9FRLGPARTYSIZE)
