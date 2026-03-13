@@ -430,7 +430,7 @@ class BDSPBot(NXBot):
         self.mainRng = self.POINTERS[self.titleID][self.buildID]['MainRng']
         self.wildPkmn = self.POINTERS[self.titleID][self.buildID]['WildPkmn']
         self.partyPkmn = self.POINTERS[self.titleID][self.buildID]['PartyPkmn']
-        print(f"Game: {self.game}    Version: {self.version}")
+        print(f"Game: {self.game}    Version: {self.version}\n")
         from structure import MyStatusBDSP
         self.TrainerSave = MyStatusBDSP(self.readTrainerBlock())
         print(f"G8TID: {self.TrainerSave.displayID()}    TID: {self.TrainerSave.TID()}    SID: {self.TrainerSave.SID()}\n")
@@ -537,7 +537,7 @@ class FRLGBot(NXBot):
                 self.close()
             self.game = self.ADDRESSES[self.titleID]['Game']
             self.curentSeedAddress = self.ADDRESSES[self.titleID]['CurrentSeedAddress']
-            print(f"Game: {self.game}")
+            print(f"Game: {self.game}\n")
 
         def getInitialSeed(self):
             return int.from_bytes(self.read(0x1208000, 2), "little")
