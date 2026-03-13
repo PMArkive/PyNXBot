@@ -475,29 +475,77 @@ class FRLGBot(NXBot):
         PK9FRLGPARTYSIZE = 0x64
         PK9FRLGBOXSIZE = 0x50
 
-        def __init__(self,ip,port = 6000):
-                NXBot.__init__(self,ip,port)
-                '''from structure import MyStatus8
-                self.TrainerSave = MyStatus8(self.readTrainerBlock())
-                self.eventoffset = 0
-                if self.TrainerSave.isPokemonSave():
-                        print(f"Game:{self.TrainerSave.GameVersion()} OT: {self.TrainerSave.OT()} ID:{self.TrainerSave.displayID()}\n")
-                        self.isPlayingSword = self.TrainerSave.isSword()
-                        self.getEventOffset(self.getSystemLanguage())
-                        self.TID = self.TrainerSave.TID()
-                        self.SID = self.TrainerSave.SID()'''
+        ADDRESSES = {
+            0x01006FA0233F8000: {
+                "Game": "FireRed (JPN)",
+                "CurrentSeedAddress": 0xBD68D230
+            },
+            0x0100F1E0233FA000: {
+                "Game": "LeafGreen (JPN)",
+                "CurrentSeedAddress": 0xBD68D230
+            },
+            0x0100554023408000: {
+                "Game": "FireRed (ENG)",
+                "CurrentSeedAddress": 0xBD68D2D0
+            },
+            0x010034D02340E000: {
+                "Game": "LeafGreen (ENG)",
+                "CurrentSeedAddress": 0xBD68D2D0
+            },
+            0x01004B3023412000: {
+                "Game": "FireRed (FRE)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x010087C02342E000: {
+                "Game": "LeafGreen (FRE)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x010092302342A000: {
+                "Game": "FireRed (ITA)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x01005C7023432000: {
+                "Game": "LeafGreen (ITA)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x01007F8023416000: {
+                "Game": "FireRed (GER)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x0100FD6023430000: {
+                "Game": "LeafGreen (GER)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x0100EB702342C000: {
+                "Game": "FireRed (SPA)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+            0x01002B5023434000: {
+                "Game": "LeafGreen (SPA)",
+                "CurrentSeedAddress": 0xBD68D220
+            },
+        }
 
-        def readTrainerBlock(self):
-            trainerBlockPointer = f"[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+E8"
-            return self.read_pointer(trainerBlockPointer, 8)
+        def __init__(self,ip,port = 6000):
+            NXBot.__init__(self,ip,port)
+            self.titleID = int(self.getTitleId(), 16)
+            if self.titleID == 0:
+                print("Game not running")
+                self.close()
+            elif self.titleID not in self.ADDRESSES:
+                print(f"Unsupported title: {self.titleID:016X}")
+                self.close()
+            self.game = self.ADDRESSES[self.titleID]['Game']
+            self.curentSeedAddress = self.ADDRESSES[self.titleID]['CurrentSeedAddress']
+            print(f"Game: {self.game}")
 
         def getInitialSeed(self):
             return int.from_bytes(self.read(0x1208000, 2), "little")
 
         def getCurrentSeed(self):
-            return int.from_bytes(self.read(0xBD68D220, 4), "little")
+            return int.from_bytes(self.read(self.curentSeedAddress, 4), "little")
 
-        def readTrainerBlock(self):
+        '''def readTrainerBlock(self):
                 return self.read(0x45061108, 0x110)
 
         def readParty(self,slot=1):
@@ -521,4 +569,4 @@ class FRLGBot(NXBot):
                 return self.read(0x8FEA3358,self.PK9FRLGPARTYSIZE)
 
         def readLegend(self):
-                return self.read(0x886BC058,self.PK9FRLGPARTYSIZE)
+                return self.read(0x886BC058,self.PK9FRLGPARTYSIZE)'''
