@@ -91,12 +91,12 @@ Sometimes button inputs of your joycons won't work. This because the fake contro
 So, everytime you want to stop the bot, always press CTRL+C and follow the instructions. The bot will detach the fake controller and buttons will work correctly. 
 
 ## Credits:
-* olliz0r for his great [sys-botbase](https://github.com/olliz0r/sys-botbase) which allows us open sockets on the Nintendo Switch
-* spacemeowx2 for his livesafer sys-module [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm). It avoids Switch to disconnect from wifi once SwSh game is opened
-* 3096 for his great days advancer Switch tool [Luxray](https://github.com/3096/ipswitch)
-* Admiral-Fish for his great app [RaidFinder](https://github.com/Admiral-Fish/RaidFinder) always up to date
-* zaksabeast for his great Switch tool [CaptureSight](https://github.com/zaksabeast/CaptureSight) (many addresses/checks are taken from there)
-* Leanny for his great plugin [PKHeX_Raid_Plugin](https://github.com/Leanny/PKHeX_Raid_Plugin/tree/master/PKHeX_Raid_Plugin) (many addresses/checks are taken from there)
-* Kurt for his great app [SysBot.NET](https://github.com/kwsch/SysBot.NET) (many addresses/checks are taken from there)
-* Lusamine for his [SySBot.NET fork](https://github.com/Lusamine/SysBot.NET) (FRLG addresses are taken from there)
+* [olliz0r](https://github.com/olliz0r) for his great [sys-botbase](https://github.com/olliz0r/sys-botbase) which allows us open sockets on the Nintendo Switch
+* [spacemeowx2](https://github.com/spacemeowx2) for his livesafer sys-module [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm). It avoids Switch to disconnect from wifi once SwSh game is opened
+* [3096](https://github.com/3096) for his great days advancer Switch tool [Luxray](https://github.com/3096/ipswitch)
+* [Admiral-Fish](https://github.com/Admiral-Fish) for the great [RaidFinder](https://github.com/Admiral-Fish/RaidFinder) always up to date
+* [zaksabeast](https://github.com/zaksabeast) for the great [CaptureSight](https://github.com/zaksabeast/CaptureSight) (many addresses/checks are taken from there)
+* [Leanny](https://github.com/Leanny) for the great [PKHeX_Raid_Plugin](https://github.com/Leanny/PKHeX_Raid_Plugin/tree/master/PKHeX_Raid_Plugin) (many addresses/checks are taken from there)
+* [kwsch](https://github.com/kwsch) for the great [SysBot.NET](https://github.com/kwsch/SysBot.NET) (many addresses/checks are taken from there)
+* [Lusamine](https://github.com/Lusamine) for [SySBot.NET fork](https://github.com/Lusamine/SysBot.NET/tree/moarencounterbots) (FRLG addresses are taken from there)
 * [Real96](https://github.com/Real96) for working on the various bots
