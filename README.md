@@ -98,4 +98,5 @@ So, everytime you want to stop the bot, always press CTRL+C and follow the instr
 * zaksabeast for his great Switch tool [CaptureSight](https://github.com/zaksabeast/CaptureSight) (many addresses/checks are taken from there)
 * Leanny for his great plugin [PKHeX_Raid_Plugin](https://github.com/Leanny/PKHeX_Raid_Plugin/tree/master/PKHeX_Raid_Plugin) (many addresses/checks are taken from there)
 * Kurt for his great app [SysBot.NET](https://github.com/kwsch/SysBot.NET) (many addresses/checks are taken from there)
+* Lusamune for his [SySBot.NET fork](https://github.com/Lusamine/SysBot.NET) (FRLG addresses are taken from there)
 * [Real96](https://github.com/Real96) for working on the various bots
