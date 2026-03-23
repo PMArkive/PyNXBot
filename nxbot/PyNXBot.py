@@ -36,6 +36,7 @@ class NXBot(object):
 
     def configure(self):
         self.sendCommand('configure echoCommands 0')
+        self.sendCommand('configure mainLoopSleepTime 0')
 
     def sendCommand(self,content):
         content += '\r\n' #important for the parser on the switch side
@@ -478,50 +479,62 @@ class FRLGBot(NXBot):
         ADDRESSES = {
             0x01006FA0233F8000: {
                 "Game": "FireRed (JPN)",
+                "VBlankCounter": 0xBD68B304,
                 "CurrentSeedAddress": 0xBD68D230
             },
             0x0100F1E0233FA000: {
                 "Game": "LeafGreen (JPN)",
+                "VBlankCounter": 0xBD68B304,
                 "CurrentSeedAddress": 0xBD68D230
             },
             0x0100554023408000: {
                 "Game": "FireRed (ENG)",
+                "VBlankCounter": 0xBD68B3A4,
                 "CurrentSeedAddress": 0xBD68D2D0
             },
             0x010034D02340E000: {
                 "Game": "LeafGreen (ENG)",
+                "VBlankCounter": 0xBD68B3A4,
                 "CurrentSeedAddress": 0xBD68D2D0
             },
             0x01004B3023412000: {
                 "Game": "FireRed (FRE)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x010087C02342E000: {
                 "Game": "LeafGreen (FRE)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x010092302342A000: {
                 "Game": "FireRed (ITA)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x01005C7023432000: {
                 "Game": "LeafGreen (ITA)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x01007F8023416000: {
                 "Game": "FireRed (GER)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x0100FD6023430000: {
                 "Game": "LeafGreen (GER)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x0100EB702342C000: {
                 "Game": "FireRed (SPA)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
             0x01002B5023434000: {
                 "Game": "LeafGreen (SPA)",
+                "VBlankCounter": 0xBD68B2F4,
                 "CurrentSeedAddress": 0xBD68D220
             },
         }
@@ -537,6 +550,7 @@ class FRLGBot(NXBot):
                 self.close()
             self.game = self.ADDRESSES[self.titleID]['Game']
             self.curentSeedAddress = self.ADDRESSES[self.titleID]['CurrentSeedAddress']
+            self.VBlankCounter = self.ADDRESSES[self.titleID]['VBlankCounter']
             print(f"Game: {self.game}\n")
 
         def getInitialSeed(self):
@@ -544,6 +558,15 @@ class FRLGBot(NXBot):
 
         def getCurrentSeed(self):
             return int.from_bytes(self.read(self.curentSeedAddress, 4), "little")
+
+        def getVBlankCounter(self):
+            return int.from_bytes(self.read(self.VBlankCounter, 4), "little")
+
+        def isBoxPointerInitialized(self):
+            return int.from_bytes(self.read(self.curentSeedAddress + 0x10, 4), "little") != 0
+
+        def getCurrentAddressValue(self, addr, size):
+            return int.from_bytes(self.read(addr, size), "little")
 
         '''def readTrainerBlock(self):
                 return self.read(0x45061108, 0x110)
