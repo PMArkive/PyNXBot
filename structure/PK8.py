@@ -94,7 +94,7 @@ class PK8(ByteStruct):
     def calChecksum(self):
         chk = 0
 
-        for i in range(8, PK8.PARTYSIZE if len(self.data) == PK8.PARTYSIZE else PK8.STOREDSIZE, 2):
+        for i in range(8, PK8.STOREDSIZE, 2):
             chk += self.getushort(i)
             chk &= 0xFFFF
 
