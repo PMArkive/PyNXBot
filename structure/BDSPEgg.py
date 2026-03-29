@@ -2,7 +2,8 @@ from structure.ByteStruct import ByteStruct
 
 class BDSPEgg(ByteStruct):
     SIZE = 0x10
-    def __init__(self,buf):
+
+    def __init__(self, buf):
         self.data = bytearray(BDSPEgg.SIZE)
         self.data[:] = buf
 

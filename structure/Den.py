@@ -13,7 +13,8 @@ class Den(ByteStruct):
     SIZE = 0x18
     LOCALTABLE = None
     EVENTTABLE = None
-    def __init__(self,buf):
+
+    def __init__(self, buf):
         self.data = bytearray(Den.SIZE)
         self.data[:] = buf
 
@@ -50,29 +51,37 @@ class Den(ByteStruct):
     def isEvent(self):
         return (self.flagByte() & 2) == 2
 
-    def getSpawn(self,denID,isSword = True):
+    def getSpawn(self, denID, isSword=True):
         gameversion = 1 if isSword else 2
         randroll = self.randroll()
         rank = self.stars() - 1
+
         if self.isEvent():
             for ii in range(Den.EVENTTABLE.TablesLength()):
                 table = Den.EVENTTABLE.Tables(ii)
+
                 if table.GameVersion() == gameversion:
                     probability = 1
+
                     for jj in range(table.EntriesLength()):
                         entry = table.Entries(jj)
                         probability += entry.Probabilities(rank)
+
                         if probability > randroll:
                             return entry
         else:
             denhash = Den.DENHASHES[denID][1 if self.isRare() else 0]
+
             for ii in range(Den.LOCALTABLE.TablesLength()):
                 table = Den.LOCALTABLE.Tables(ii)
+
                 if table.TableID() == denhash and table.GameVersion() == gameversion:
                     probability = 1
+
                     for jj in range(table.EntriesLength()):
                         entry = table.Entries(jj)
                         probability += entry.Probabilities(rank)
+
                         if probability > randroll:
                             return entry
 
@@ -80,17 +89,22 @@ class Den(ByteStruct):
     def getCrystalRank(level):
         if 15 <= level and level <= 20:
             return 0
+
         if 25 <= level and level <= 30:
             return 1
+
         if 35 <= level and level <= 40:
             return 2
+
         if 45 <= level and level <= 50:
             return 3
+
         if 55 <= level and level <= 60:
             return 4
+
         return -1
 
-    EVENTHASH = 1721953670860364124;
+    EVENTHASH = 1721953670860364124
     DENHASHES = [
         [1675062357515959378, 13439833545771248589],
         [1676893044376552243, 13440787921864346512],

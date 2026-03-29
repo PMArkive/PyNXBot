@@ -6,8 +6,9 @@ class PK3(ByteStruct):
     PARTYSIZE = 0x64
     BLOCKSIZE = 0xC
 
-    def __init__(self,buf):
+    def __init__(self, buf):
         self.data = bytearray(buf[:])
+
         if self.isEncrypted():
             self.decrypt()
 
@@ -48,7 +49,7 @@ class PK3(ByteStruct):
             return 1
 
     def evs(self):
-        return [self.data[0x38],self.data[0x39],self.data[0x3A],self.data[0x3C],self.data[0x3D],self.data[0x3B]]
+        return [self.data[0x38], self.data[0x39], self.data[0x3A], self.data[0x3C], self.data[0x3D], self.data[0x3B]]
 
     def move1(self):
         return self.getushort(0x2C)
@@ -69,7 +70,7 @@ class PK3(ByteStruct):
         return self.getuint(0x48)
 
     def battleStats(self): # Lv,HP,Atk,Def,SpA,SpD,Spe
-        return self.getbyte(0x54),self.getushort(0x56),self.getushort(0x5A),self.getushort(0x5C),self.getushort(0x60),self.getushort(0x62),self.getushort(0x5E)
+        return self.getbyte(0x54), self.getushort(0x56), self.getushort(0x5A), self.getushort(0x5C), self.getushort(0x60), self.getushort(0x62), self.getushort(0x5E)
 
     def isEgg(self):
         return ((self.iv32() >> 30) & 1) == 1
@@ -86,45 +87,46 @@ class PK3(ByteStruct):
 
     def calChecksum(self):
         chk = 0
-        for i in range(32,PK3.STOREDSIZE,2):
+
+        for i in range(32, PK3.PARTYSIZE if len(self.data) == PK3.PARTYSIZE else PK3.STOREDSIZE, 2):
             chk += self.getushort(i)
             chk &= 0xFFFF
+
         return chk
 
     @staticmethod
-    def getShinyType(otid,pid):
+    def getShinyType(otid, pid):
         xor = (otid >> 16) ^ (otid & 0xFFFF) ^ (pid >> 16) ^ (pid & 0xFFFF)
-        if xor > 15:
-            return 0
-        else:
-            return 2 if xor == 0 else 1
+
+        return 0 if xor > 15 else 2 if xor == 0 else 1
 
     def shinyType(self):
-        return self.getShinyType(self.sidtid(),self.pid())
+        return self.getShinyType(self.sidtid(), self.pid())
 
     def shinyString(self):
-        return 'None' if self.shinyType() == 0 else 'Star' if self.shinyType() == 1 else 'Square'
+        return "None" if self.shinyType() == 0 else "Star" if self.shinyType() == 1 else "Square"
 
-    def save(self,filename):
-        with open(f'{filename}.pk3','wb') as fileOut:
+    def save(self, filename):
+        with open(f"{filename}.pk3", "wb") as fileOut:
             fileOut.write(self.data)
 
     def toString(self):
         if self.isValid():
             shinytype = self.shinyType()
-            shinyflag = '' if shinytype == 0 else '⋆  ' if shinytype == 1 else '◇  '
-            msg = f'PID: {self.pid():X}  ' + shinyflag
+            shinyflag = "" if shinytype == 0 else "⋆  " if shinytype == 1 else "◇  "
+            msg = f"PID: {self.pid():X}  " + shinyflag
             msg += f"{Util(GameVersion.FRLG).STRINGS.species[self.species()]}\n"
-            msg += f'Held item: {Util(GameVersion.FRLG,gen="_3rd").STRINGS.items[self.helditem()]}\n'
+            msg += f"Held item: {Util(GameVersion.FRLG,gen="_3rd").STRINGS.items[self.helditem()]}\n"
             msg += f"Nature: {Util(GameVersion.FRLG).STRINGS.natures[self.nature()]}  "
             msg += f"Ability: {Util(GameVersion.FRLG,gen="_3rd").STRINGS.abilities[self.ability()]} ({self.abilityNum()})  "
             msg += f"Gender: {Util(GameVersion.FRLG).GenderSymbol[self.gender()]}\n"
             msg += f"IVs: {self.ivs()}  EVs: {self.evs()}\n"
             msg += f"Moves: {Util(GameVersion.FRLG).STRINGS.moves[self.move1()]} / {Util(GameVersion.FRLG).STRINGS.moves[self.move2()]} / {Util(GameVersion.FRLG).STRINGS.moves[self.move3()]} / {Util(GameVersion.FRLG).STRINGS.moves[self.move4()]}\n"
+
             return msg
         else:
-            return 'Invalid Data'
-    
+            return "Invalid Data"
+
     def isBadEgg(self):
         self.miscflags() & 1 != 0
 
@@ -143,11 +145,13 @@ class PK3(ByteStruct):
 
     def __cryptPKM__(self, seed):
         self.__crypt__(seed, 32, PK3.STOREDSIZE)
+ 
         if len(self.data) == PK3.PARTYSIZE:
             self.__crypt__(seed, PK3.STOREDSIZE, PK3.PARTYSIZE)
 
     def __crypt__(self, seed, start, end):
         i = start
+
         while i < end:
             self.data[i] ^= (seed & 0xFF)
             self.data[i + 1] ^= (seed >> 8) & 0xFF
@@ -158,6 +162,7 @@ class PK3(ByteStruct):
     def __shuffle__(self, sv):
         idx = 4 * sv
         sdata = bytearray(self.data[:])
+
         for block in range(4):
             ofs = PK3.BLOCKPOSITION[idx + block]
             self.data[32 + PK3.BLOCKSIZE * block : 32 + PK3.BLOCKSIZE * (block + 1)] = sdata[32 + PK3.BLOCKSIZE * ofs : 32 + PK3.BLOCKSIZE * (ofs + 1)]
@@ -173,6 +178,7 @@ class PK3(ByteStruct):
 
         self.__shuffle__(PK3.blockPositionInvert[pid % 24])
         self.__cryptPKM__(seed)
+
         return self.data
 
     blockPositionInvert = [
