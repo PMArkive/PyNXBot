@@ -1,9 +1,9 @@
 import os
 
 class PKMString(object):
-	def __init__(self,lang = 'en'):
+	def __init__(self,lang = 'en',gen = ""):
 		currentfolder = os.path.dirname(__file__) 
-		with open(currentfolder+ f'/text_Abilities_{lang}.txt','r', encoding="utf8") as file: 
+		with open(currentfolder+ f'/text_Abilities_{lang}{gen}.txt','r', encoding="utf8") as file: 
 			self.abilities = file.read().splitlines()
 		with open(currentfolder + f'/text_Natures_{lang}.txt','r', encoding="utf8") as file: 
 			self.natures = file.read().splitlines()
@@ -11,7 +11,7 @@ class PKMString(object):
 			self.species = file.read().splitlines()
 		with open(currentfolder + f'/text_Moves_{lang}.txt','r', encoding="utf8") as file: 
 			self.moves = file.read().splitlines()
-		with open(currentfolder + f'/text_Items_{lang}.txt','r', encoding="utf8") as file: 
+		with open(currentfolder + f'/text_Items_{lang}{gen}.txt','r', encoding="utf8") as file: 
 			self.items = file.read().splitlines()
 		with open(currentfolder + f'/text_Types_{lang}.txt','r', encoding="utf8") as file: 
 			self.types = file.read().splitlines()

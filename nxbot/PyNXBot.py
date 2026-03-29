@@ -565,9 +565,6 @@ class FRLGBot(NXBot):
         def isBoxPointerInitialized(self):
             return int.from_bytes(self.read(self.curentSeedAddress + 0x10, 4), "little") != 0
 
-        def getCurrentAddressValue(self, addr, size):
-            return int.from_bytes(self.read(addr, size), "little")
-
         '''def readTrainerBlock(self):
                 return self.read(0x45061108, 0x110)
 

@@ -118,11 +118,11 @@ class PK8(ByteStruct):
 		from lookups import Util
 		if self.isValid():
 			shinytype = self.shinyType()
-			shinyflag = '' if shinytype == 0 else '⋆ ' if shinytype == 1 else '◇ '
+			shinyflag = '' if shinytype == 0 else '⋆  ' if shinytype == 1 else '◇  '
 			msg = f'EC: {self.ec():X}  PID: {self.pid():X}  ' + shinyflag
 			msg += f"{'G-' if self.canGigantamax() else ''}{Util.STRINGS.species[self.species()]}{('-' + str(self.altForm())) if self.altForm() > 0 else ''}\n"
-			msg += f"Nature: {Util.STRINGS.natures[self.nature()]}({Util.STRINGS.natures[self.statnature()]})  "
-			msg += f"Ability: {Util.STRINGS.abilities[self.ability()]}({self.abilityNum() if self.abilityNum() < 4 else 'H'})  "
+			msg += f"Nature: {Util.STRINGS.natures[self.nature()]} ({Util.STRINGS.natures[self.statnature()]})  "
+			msg += f"Ability: {Util.STRINGS.abilities[self.ability()]} ({self.getAbilityString()})  "
 			msg += f"Gender: {Util.GenderSymbol[self.gender()]}\n"
 			msg += f"IVs: {self.ivs()}  EVs: {self.evs()}\n"
 			msg += f"Moves: {Util.STRINGS.moves[self.move1()]} / {Util.STRINGS.moves[self.move2()]} / {Util.STRINGS.moves[self.move3()]} / {Util.STRINGS.moves[self.move4()]}\n"
