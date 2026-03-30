@@ -6,7 +6,12 @@ sys.path.append("../")
 from flatbuffers.compat import import_numpy
 from lookups import PKMString
 from nxbot import SWSHBot
-from structure import NestHoleReward8Archive, NestHoleDistributionEncounter8Archive, NestHoleCrystalEncounter8Archive, NestHoleDistributionReward8Archive
+from structure import (
+    NestHoleReward8Archive,
+    NestHoleDistributionEncounter8Archive,
+    NestHoleCrystalEncounter8Archive,
+    NestHoleDistributionReward8Archive,
+)
 
 Path = "Event/PersonalDump/"
 Island = 0
@@ -19,12 +24,26 @@ drop = NestHoleReward8Archive.GetRootAsNestHoleReward8Archive(buf, 0)
 buf = bytearray(open("../resources/bytes/local_bonus", "rb").read())
 bonus = NestHoleReward8Archive.GetRootAsNestHoleReward8Archive(buf, 0)
 
-buf = bytearray(open(Path + "normal_encount", "rb").read()) if Island == 0 else bytearray(open(Path + f"normal_encount_rigel{Island}", "rb").read())
-eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(buf, 0x20)
+buf = (
+    bytearray(open(Path + "normal_encount", "rb").read())
+    if Island == 0
+    else bytearray(open(Path + f"normal_encount_rigel{Island}", "rb").read())
+)
+eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(
+    buf, 0x20
+)
 buf = bytearray(open(Path + "drop_rewards", "rb").read())
-dropreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+dropreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 buf = bytearray(open(Path + "bonus_rewards", "rb").read())
-bonusreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+bonusreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 
 for ii in range(eventencounter.TablesLength()):
     table = eventencounter.Tables(ii)
@@ -32,4 +51,6 @@ for ii in range(eventencounter.TablesLength()):
     for jj in range(table.EntriesLength()):
         entry = table.Entries(jj)
         rank = np.nonzero(entry.ProbabilitiesAsNumpy())[0]
-        print(f"{entry.Nature()}-{pmtext.species[entry.Species()]}-{rank[0] + 1}-{entry.Field09()}")
+        print(
+            f"{entry.Nature()}-{pmtext.species[entry.Species()]}-{rank[0] + 1}-{entry.Field09()}"
+        )

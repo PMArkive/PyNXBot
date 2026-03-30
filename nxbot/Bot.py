@@ -1,6 +1,7 @@
 from time import sleep
 from abc import ABC, abstractmethod
 
+
 class Bot(ABC):
     # Botton
     def A(self, duration=0.1):
@@ -90,7 +91,7 @@ class Bot(ABC):
     def rs_u(self, duration=0.1):
         pass
 
-    def pause(self,duration):
+    def pause(self, duration):
         sleep(duration)
 
     def quit_app(self):
@@ -119,7 +120,7 @@ class Bot(ABC):
         self.A()
         sleep(0.5)
         self.A()
-        print('Switch entering sleep mode')
+        print("Switch entering sleep mode")
 
     def attach(self):
         self.LS()
@@ -141,7 +142,8 @@ class Bot(ABC):
         self.pause(1)
         self.A()
 
-class ACNHBot():
+
+class ACNHBot:
     def __init__(self, bot=None):
         if isinstance(bot, Bot):
             self.bot = bot
@@ -152,30 +154,30 @@ class ACNHBot():
         if Pro:
             b.L()
             b.L()
-            b.L() # White
+            b.L()  # White
         else:
-            b.L() # Transparent
+            b.L()  # Transparent
 
-        b.X() # Tool
+        b.X()  # Tool
         b.d()
         b.d()
         b.d()
         b.d()
         b.A()
-        b.A() # Clear Canvas
+        b.A()  # Clear Canvas
 
         b.X()
         b.u()
         b.u()
         b.u()
         b.u()
-        b.A() # Choose pen
+        b.A()  # Choose pen
 
-        b.l(3) # Move cursor to top-left
+        b.l(3)  # Move cursor to top-left
         b.u(3)
 
         if Pro:
-            b.L() # Black
+            b.L()  # Black
 
     def SetPalette(self, colorlist):
         b = self.bot
@@ -236,7 +238,7 @@ class ACNHBot():
                 self.bot.L()
 
     def PrintDesign(self, hsv_array):
-        h , w , d = hsv_array.shape
+        h, w, d = hsv_array.shape
         direction = +1
         last_hsv = [0, 0, 0, 255, 0]
 
@@ -260,7 +262,7 @@ class ACNHBot():
 
                     continue
 
-                self.ChooseColor(last_hsv,hsv)
+                self.ChooseColor(last_hsv, hsv)
                 last_hsv = hsv
                 self.PrintPIX()
 
@@ -268,4 +270,4 @@ class ACNHBot():
                     self.MoveToNextPixel(direction)
 
             self.Move2NextRow()
-            direction = - direction
+            direction = -direction

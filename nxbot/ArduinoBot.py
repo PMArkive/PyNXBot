@@ -4,6 +4,7 @@ import serial.tools.list_ports
 from time import sleep
 from nxbot import Bot
 
+
 class ArduinoBot(Bot):
     def __init__(self, serial_port=None, printout=False):
         if serial_port is None:

@@ -5,16 +5,19 @@ sys.path.append("../")
 
 from nxbot import BDSPIDsBot
 
+
 # CTRL+C handler
 def signal_handler(signal, advances):
     print("Stop request")
     b.moveStick("RIGHT", x=0, y=0)
     b.close()
 
+
 signal.signal(signal.SIGINT, signal_handler)
 
 config = json.load(open("../config.json"))
 b = BDSPIDsBot(config["IP"])
+
 
 def openSecondMenu():
     print(f"Cycle: {n}")
@@ -35,6 +38,7 @@ def openSecondMenu():
     b.click("X")
     b.pause(1)
 
+
 def getHeldItem():
     slot = j + 1 if i % 2 == 0 else 7 - (j + 1)
     print(f"Getting item in Line {i + 1} Slot {slot}")
@@ -51,6 +55,7 @@ def getHeldItem():
     b.click("A")
     b.pause(0.5)
 
+
 def moveToNextSlot(line):
     rightStickValue = 32767 if line % 2 == 0 else -32767
     b.moveStick("RIGHT", x=rightStickValue, y=0)
@@ -58,10 +63,12 @@ def moveToNextSlot(line):
     b.moveStick("RIGHT", x=0, y=0)
     b.pause(0.2)
 
+
 def moveToNextLine():
     b.moveStick("RIGHT", x=0, y=-32767)
     b.pause(0.3)
     b.moveStick("RIGHT", x=0, y=0)
+
 
 def goBackToFirstMenu():
     print("Going back to first menu...\n")
@@ -74,6 +81,7 @@ def goBackToFirstMenu():
     b.pause(2)
     b.click("B")
     b.pause(2.3)
+
 
 cycles = input("Do you want a limited number of cloning cycles? (y/n): ")
 

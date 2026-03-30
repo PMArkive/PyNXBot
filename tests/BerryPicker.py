@@ -7,12 +7,14 @@ sys.path.append("../")
 
 from nxbot import BerryBot
 
+
 # CTRL+C handler
 def signal_handler(signal, frame):
     print()
     print("Stop request")
     b.pickBeforeLeaving()
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -36,7 +38,7 @@ while i < cycles:
     # R on Luxray "+1" button
     b.click("R")
     b.pause(1.2)
-    print("Cycle", i+1)
+    print("Cycle", i + 1)
     b.shakeTree()
     b.continueShaking(shakes - 1)
     b.pickEverything()

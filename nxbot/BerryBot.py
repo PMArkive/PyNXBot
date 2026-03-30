@@ -1,6 +1,7 @@
 from nxbot import SWSHBot
 from structure import PK8, Screen
 
+
 class BerryBot(SWSHBot):
     def __init__(self, ip, port=6000):
         SWSHBot.__init__(self, ip, port)
@@ -45,14 +46,14 @@ class BerryBot(SWSHBot):
 
         return False
 
-    def continueShaking(self,shakes = 0):
+    def continueShaking(self, shakes=0):
         battle = False
 
         for i in range(shakes):
             self.click("A")
             print("Shaking...")
             self.pause(3.2)
-            #print("Battle check")
+            # print("Battle check")
 
             if self.battleCheck():
                 self.pause(5.2)

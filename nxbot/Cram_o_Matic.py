@@ -1,6 +1,7 @@
 from nxbot import SWSHBot
 from structure import Screen
 
+
 class Cram_o_Matic(SWSHBot):
     def __init__(self, ip, port=6000):
         SWSHBot.__init__(self, ip, port)

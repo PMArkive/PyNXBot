@@ -9,7 +9,7 @@ from nxbot import ACNHBot, ArduinoBot
 Filename = "Images/129s.png"
 
 hsvarray = Util(GameVersion.SWSH).convertImage(Filename)
-colorlist , hsvarray = Util(GameVersion.SWSH).generatePallete(hsvarray, size=32)
+colorlist, hsvarray = Util(GameVersion.SWSH).generatePallete(hsvarray, size=32)
 a = ArduinoBot()
 a.attach()
 

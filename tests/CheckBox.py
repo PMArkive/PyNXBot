@@ -15,7 +15,7 @@ while True:
     print()
 
     for ii in range(1, 31):
-        pk8 = PK8(b.readBox(box,ii))
+        pk8 = PK8(b.readBox(box, ii))
 
         if pk8.isValid() and pk8.ec() != 0:
             print(f"Box: {box} Slot: {ii}")
@@ -25,7 +25,7 @@ while True:
     if empty:
         print("Box is empty\n")
 
-    stop = input("Continue? (y/n) " )
+    stop = input("Continue? (y/n) ")
 
     if stop != "y" and stop != "Y":
         break

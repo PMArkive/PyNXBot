@@ -1,6 +1,7 @@
 from structure.ByteStruct import ByteStruct
 from lookups import GameVersion
 
+
 class PersonalInfo(ByteStruct):
     def FormStatsIndex(self):
         return 0
@@ -19,6 +20,7 @@ class PersonalInfo(ByteStruct):
             return species
 
         return self.FormStatsIndex() + forme - 1
+
 
 class PersonalInfoSWSH(PersonalInfo):
     SIZE = 0xB0
@@ -69,6 +71,7 @@ class PersonalInfoSWSH(PersonalInfo):
     def BaseSpeciesForm(self):
         return self.getushort(0x58)
 
+
 class PersonalInfoFRLG(PersonalInfo):
     SIZE = 0x1C
 
@@ -100,9 +103,49 @@ class PersonalInfoFRLG(PersonalInfo):
     def Abilities(self):
         return [self.Ability1(), self.Ability2()]
 
+
 class PersonalTable(object):
-    Galarlist = [52, 77, 78, 79, 80, 83, 110, 122, 144, 145, 146, 199, 222, 263, 264, 554, 555, 562, 618]
-    Alolalist = [19, 20, 26, 27, 28, 37, 38, 50, 51, 52, 53, 74, 75, 76, 88, 89, 103, 105]
+    Galarlist = [
+        52,
+        77,
+        78,
+        79,
+        80,
+        83,
+        110,
+        122,
+        144,
+        145,
+        146,
+        199,
+        222,
+        263,
+        264,
+        554,
+        555,
+        562,
+        618,
+    ]
+    Alolalist = [
+        19,
+        20,
+        26,
+        27,
+        28,
+        37,
+        38,
+        50,
+        51,
+        52,
+        53,
+        74,
+        75,
+        76,
+        88,
+        89,
+        103,
+        105,
+    ]
 
     def __init__(self, buf, ver=GameVersion.SWSH):
         length = len(buf)
@@ -132,7 +175,7 @@ class PersonalTable(object):
         if species == 678 or species == 876:
             return 1004 if forme else 678
 
-        if species in self.Alolalist and forme <= 1: # Skip Galarian Meowth
+        if species in self.Alolalist and forme <= 1:  # Skip Galarian Meowth
             return 810 if forme else 1
 
         if species in self.Galarlist:
@@ -156,7 +199,7 @@ class PersonalTable(object):
         if species == 479:
             return 916 + forme
 
-        if species in [422,423]:
+        if species in [422, 423]:
             return 911
 
         return -1

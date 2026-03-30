@@ -1,5 +1,6 @@
 from nxbot import BDSPBot
 
+
 class BDSPIDsBot(BDSPBot):
     def __init__(self, ip, port=6000):
         BDSPBot.__init__(self, ip, port)

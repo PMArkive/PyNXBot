@@ -34,6 +34,7 @@ JUMP_DATA = (
     (0x1, 0x80000000),
 )
 
+
 def lcrng_distance(state0: int, state1: int) -> int:
     """Efficiently compute the distance from LCRNG state0 -> state1"""
     mask = 1
@@ -51,20 +52,24 @@ def lcrng_distance(state0: int, state1: int) -> int:
 
     return dist
 
+
 # Go to root/test of PyNXBot
 import signal
 import sys
 import json
-sys.path.append('../')
+
+sys.path.append("../")
 
 from nxbot import FRLGBot
 
 config = json.load(open("../config.json"))
 b = FRLGBot(config["IP"])
 
-def signal_handler(signal, advances): #CTRL+C handler
+
+def signal_handler(signal, advances):  # CTRL+C handler
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -76,14 +81,14 @@ print()
 print(f"Initial Seed: {initialSeed:04X}")
 print()
 
-'''targetAdvances = 0
+"""targetAdvances = 0
 botFlag = input("Press A at a specific advance? (y/n) ")
 if botFlag == "y" or botFlag == "Y":
     botFlag = True
     targetAdvances = int(input("Input the target advance: "))
 else:
     botFlag = False
-print("\n")'''
+print("\n")"""
 
 while True:
     tempInitialSeed = b.getInitialSeed()
@@ -107,7 +112,7 @@ while True:
                 b.click("A")
                 b.pause(0.1)
 
-    '''if botFlag and advances == targetAdvances:
+    """if botFlag and advances == targetAdvances:
             for i in range(5):
                 b.click("A")
-                b.pause(0.2)'''
+                b.pause(0.2)"""

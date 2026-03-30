@@ -1,5 +1,4 @@
 class ByteStruct(object):
-
     def __init__(self, buf):
         self.data = bytearray(buf[:])
 

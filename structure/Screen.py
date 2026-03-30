@@ -1,5 +1,6 @@
 from structure.ByteStruct import ByteStruct
 
+
 class Screen(ByteStruct):
     DIALOGENDED1 = 0xFFFF5127
     DIALOGENDED2 = 0xFFFFFFFF
@@ -18,17 +19,20 @@ class Screen(ByteStruct):
         return self.getulong(0x0)
 
     def isIntroAnimationSkippable(self):
-        #print(f"{self.getScreenOffLong():0X}")
+        # print(f"{self.getScreenOffLong():0X}")
         return self.getScreenOffLong() >= 0xFFFF
 
     def overworldCheck(self):
-        #print(f"{self.getScreenOffByte():0X}")
+        # print(f"{self.getScreenOffByte():0X}")
         return self.getScreenOffByte()
 
     def battleMenuAppeared(self):
-        #print(f"{self.getScreenOffInt():0X}")
+        # print(f"{self.getScreenOffInt():0X}")
         return self.getScreenOffInt() == self.BATTLEMENU
 
     def endedDialogue(self):
-        #print(f"{self.getScreenOffInt():0X}")
-        return self.getScreenOffInt() == self.DIALOGENDED1 or self.getScreenOffInt() == self.DIALOGENDED2
+        # print(f"{self.getScreenOffInt():0X}")
+        return (
+            self.getScreenOffInt() == self.DIALOGENDED1
+            or self.getScreenOffInt() == self.DIALOGENDED2
+        )

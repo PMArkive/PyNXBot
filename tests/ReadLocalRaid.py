@@ -32,11 +32,11 @@ else:
             msg = f"{msg:25}\t"
 
             if entry.Ability() == 4:
-                msg +=f"HA allowed\t"
+                msg += f"HA allowed\t"
             elif entry.Ability() == 3:
-                msg +=f"no HA\t"
+                msg += f"no HA\t"
             elif entry.Ability() == 2:
-                msg +=f"HA Only\t"
+                msg += f"HA Only\t"
             else:
                 msg += f"Ability {entry.Ability() + 1} Only\t"
 
@@ -58,7 +58,11 @@ else:
                         ldte = ldt.Entries(kk)
 
                         if ldte.Values(rank) > 0:
-                            msg += pmtext.items[ldte.ItemID()] + f"({ldte.Values(rank)}%)" + "  \t"
+                            msg += (
+                                pmtext.items[ldte.ItemID()]
+                                + f"({ldte.Values(rank)}%)"
+                                + "  \t"
+                            )
 
                     print(msg)
 
@@ -74,7 +78,11 @@ else:
                         lbte = lbt.Entries(kk)
 
                         if lbte.Values(rank) > 0:
-                            msg += f"{lbte.Values(rank)} x " + pmtext.items[lbte.ItemID()] + "\t\t"
+                            msg += (
+                                f"{lbte.Values(rank)} x "
+                                + pmtext.items[lbte.ItemID()]
+                                + "\t\t"
+                            )
 
                     print(msg)
 

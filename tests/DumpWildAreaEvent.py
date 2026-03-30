@@ -6,7 +6,12 @@ sys.path.append("../")
 from flatbuffers.compat import import_numpy
 from lookups import PKMString
 from nxbot import SWSHBot
-from structure import NestHoleReward8Archive, NestHoleDistributionEncounter8Archive, NestHoleCrystalEncounter8Archive, NestHoleDistributionReward8Archive
+from structure import (
+    NestHoleReward8Archive,
+    NestHoleDistributionEncounter8Archive,
+    NestHoleCrystalEncounter8Archive,
+    NestHoleDistributionReward8Archive,
+)
 
 np = import_numpy()
 
@@ -31,29 +36,48 @@ if ReadFromConsole:
     else:
         buf = b.readEventBlock_RaidEncounter_CT(DumpPath)
 else:
-    buf = bytearray(open(LocalPath + "normal_encount", "rb").read()) if Island == 0 else bytearray(open(LocalPath + f"normal_encount_rigel{Island}", "rb").read())
-eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(buf, 0x20)
+    buf = (
+        bytearray(open(LocalPath + "normal_encount", "rb").read())
+        if Island == 0
+        else bytearray(open(LocalPath + f"normal_encount_rigel{Island}", "rb").read())
+    )
+eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(
+    buf, 0x20
+)
 
 if ReadFromConsole:
     buf = b.readEventBlock_DropRewards(DumpPath)
 else:
     buf = bytearray(open(LocalPath + "drop_rewards", "rb").read())
 
-dropreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+dropreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 
 if ReadFromConsole:
     buf = b.readEventBlock_BonusRewards(DumpPath)
 else:
     buf = bytearray(open(LocalPath + "bonus_rewards", "rb").read())
 
-bonusreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+bonusreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 
 if ReadFromConsole:
     buf = b.readEventBlock_CrystalEncounter(DumpPath)
 else:
     buf = bytearray(open(LocalPath + "dai_encount", "rb").read())
 
-crystalencounter = NestHoleCrystalEncounter8Archive.GetRootAsNestHoleCrystalEncounter8Archive(buf, 0x20)
+crystalencounter = (
+    NestHoleCrystalEncounter8Archive.GetRootAsNestHoleCrystalEncounter8Archive(
+        buf, 0x20
+    )
+)
+
 
 def getCrystalRank(level):
     if 15 <= level and level <= 20:
@@ -73,6 +97,7 @@ def getCrystalRank(level):
 
     return -1
 
+
 def printdrop(dropid, rank):
     # look up local drop tables
     for jj in range(drop.TablesLength()):
@@ -85,13 +110,15 @@ def printdrop(dropid, rank):
                 ldte = ldt.Entries(kk)
 
                 if ldte.Values(rank) > 0:
-                    msg += pmtext.items[ldte.ItemID()] + f"({ldte.Values(rank)}%)" + "  \t"
+                    msg += (
+                        pmtext.items[ldte.ItemID()] + f"({ldte.Values(rank)}%)" + "  \t"
+                    )
 
             print(msg)
 
     # look up event drop tables
     for jj in range(dropreward.TablesLength()):
-        edt = dropreward.Tables(jj) # event drop table
+        edt = dropreward.Tables(jj)  # event drop table
 
         if dropid == edt.TableID():
             msg = "Drop(E): "
@@ -100,9 +127,9 @@ def printdrop(dropid, rank):
                 edte = edt.Entries(kk)
 
                 if rank == 0:
-                     value = edte.Value0()
+                    value = edte.Value0()
                 elif rank == 1:
-                     value = edte.Value1()
+                    value = edte.Value1()
                 elif rank == 2:
                     value = edte.Value2()
                 elif rank == 3:
@@ -111,9 +138,12 @@ def printdrop(dropid, rank):
                     value = edte.Value4()
 
                 if value > 0:
-                    msg += pmtext.items[edt.Entries(kk).ItemID()] + f"({value}%)" + "  \t"
+                    msg += (
+                        pmtext.items[edt.Entries(kk).ItemID()] + f"({value}%)" + "  \t"
+                    )
 
             print(msg)
+
 
 def printbonus(bonusid, rank):
     # look up local bonus tables
@@ -121,30 +151,32 @@ def printbonus(bonusid, rank):
         lbt = bonus.Tables(jj)
 
         if bonusid == lbt.TableID():
-            msg = "Bonus: " 
+            msg = "Bonus: "
 
             for kk in range(lbt.EntriesLength()):
                 lbte = lbt.Entries(kk)
 
                 if lbte.Values(rank) > 0:
-                    msg += f"{lbte.Values(rank)} x " + pmtext.items[lbte.ItemID()] + "\t\t"
+                    msg += (
+                        f"{lbte.Values(rank)} x " + pmtext.items[lbte.ItemID()] + "\t\t"
+                    )
 
             print(msg)
 
     # look up event bonus tables
     for jj in range(bonusreward.TablesLength()):
-        ebt = bonusreward.Tables(jj) # event bonus table
+        ebt = bonusreward.Tables(jj)  # event bonus table
 
         if bonusid == ebt.TableID():
-            msg = "Bonus(E): " 
+            msg = "Bonus(E): "
 
             for kk in range(ebt.EntriesLength()):
                 ebte = ebt.Entries(kk)
 
                 if rank == 0:
-                     value = ebte.Value0()
+                    value = ebte.Value0()
                 elif rank == 1:
-                     value = ebte.Value1()
+                    value = ebte.Value1()
                 elif rank == 2:
                     value = ebte.Value2()
                 elif rank == 3:
@@ -153,9 +185,12 @@ def printbonus(bonusid, rank):
                     value = ebte.Value4()
 
                 if value > 0:
-                    msg += f"{value} x " + pmtext.items[ebt.Entries(kk).ItemID()] + "\t\t"
+                    msg += (
+                        f"{value} x " + pmtext.items[ebt.Entries(kk).ItemID()] + "\t\t"
+                    )
 
             print(msg)
+
 
 def getMoves(entry):
     msg = f"{pmtext.moves[entry.Move0()]} / {pmtext.moves[entry.Move1()]} / {pmtext.moves[entry.Move2()]} / {pmtext.moves[entry.Move3()]}  \t"
@@ -168,11 +203,12 @@ def getMoves(entry):
 
     return msg
 
+
 print("Raid Encounter Table")
 
 if eventencounter.TablesIsNone():
     print("No promoted raid or wrong offset!")
-else: 
+else:
     for ii in range(eventencounter.TablesLength()):
         table = eventencounter.Tables(ii)
         print(f"Table ID:{table.TableID()}")
@@ -192,7 +228,7 @@ else:
                 msg += "Not catchable\t"
 
             if entry.Ability() == 4:
-                pass # random ability
+                pass  # random ability
             elif entry.Ability() == 3:
                 msg += f"A:(1/2) Only\t"
             elif entry.Ability() == 2:
@@ -201,7 +237,7 @@ else:
                 msg += f"Ability {entry.Ability() + 1} Only\t"
 
             if entry.Nature() == 25:
-                pass # random nature
+                pass  # random nature
             else:
                 msg += f"{pmtext.natures[entry.Nature()]}\t"
 
@@ -220,7 +256,7 @@ print("\n\nCrystal Encounter Table")
 
 if crystalencounter.TablesIsNone():
     print("Wrong offset!")
-else: 
+else:
     for ii in range(crystalencounter.TablesLength()):
         table = crystalencounter.Tables(ii)
         print(f"Table ID:{table.TableID():X}")
@@ -229,11 +265,15 @@ else:
         for jj in range(table.EntriesLength()):
             entry = table.Entries(jj)
 
-            if entry.Species() == 0:    # Skip eggs
+            if entry.Species() == 0:  # Skip eggs
                 continue
 
-            print(f"{entry.EntryIndex()}:\tDynamax Crystal:" + pmtext.items[1279 + jj] + f"\t{"G-" if entry.IsGigantamax() else ""}{pmtext.species[entry.Species()]}{("-" + str(entry.AltForm())) if entry.AltForm() > 0 else ""}")
-            msg =  f"Lv:{entry.Level()}"
+            print(
+                f"{entry.EntryIndex()}:\tDynamax Crystal:"
+                + pmtext.items[1279 + jj]
+                + f"\t{"G-" if entry.IsGigantamax() else ""}{pmtext.species[entry.Species()]}{("-" + str(entry.AltForm())) if entry.AltForm() > 0 else ""}"
+            )
+            msg = f"Lv:{entry.Level()}"
             msg = f"{msg:25}\t"
             msg += f"N:{entry.Nature()}\t"
             msg += f"{entry.IVHp()}/{entry.IVAtk()}/{entry.IVDef()}/{entry.IVSpAtk()}/{entry.IVSpDef()}/{entry.IVSpe()}\t"
@@ -250,7 +290,7 @@ else:
 
 # if dropreward.TablesIsNone():
 #     print("Wrong offset!")
-# else: 
+# else:
 #     for ii in range(dropreward.TablesLength()):
 #         table = dropreward.Tables(ii)
 #         print(f"Drop Table ID:{table.TableID():X}")
@@ -265,7 +305,7 @@ else:
 
 # if bonusreward.TablesIsNone():
 #     print("Wrong offset!")
-# else: 
+# else:
 #     for ii in range(bonusreward.TablesLength()):
 #         table = bonusreward.Tables(ii)
 #         print(f"Bonus Table ID:{table.TableID():X}")

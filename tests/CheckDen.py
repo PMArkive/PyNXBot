@@ -5,12 +5,14 @@ sys.path.append("../")
 
 from lookups import Util, GameVersion
 from nxbot import RaidBot
-from rng import XOROSHIRO,Raid
+from rng import XOROSHIRO, Raid
 from structure import Den
 
-def signal_handler(signal, frame): #CTRL+C handler
+
+def signal_handler(signal, frame):  # CTRL+C handler
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -67,7 +69,17 @@ for ii in range(RaidBot.DENCOUNT):
             piecedShinyLock = currShinyLock
 
         print(info)
-        r = Raid(seed=den.seed(), TID=b.TID, SID=b.SID, flawlessiv=spawn.FlawlessIVs(), shinyLock=currShinyLock, ability=spawn.Ability(), gender=spawn.Gender(), species=spawn.Species(), altform=spawn.AltForm())
+        r = Raid(
+            seed=den.seed(),
+            TID=b.TID,
+            SID=b.SID,
+            flawlessiv=spawn.FlawlessIVs(),
+            shinyLock=currShinyLock,
+            ability=spawn.Ability(),
+            gender=spawn.Gender(),
+            species=spawn.Species(),
+            altform=spawn.AltForm(),
+        )
         r.print()
         print()
 
@@ -77,11 +89,23 @@ if seed is not None and doResearch:
     i = 0
 
     while i < MaxResults:
-        r = Raid(seed, TID=b.TID, SID=b.SID, flawlessiv=piecedSpawn.FlawlessIVs(), shinyLock=piecedShinyLock, ability=piecedSpawn.Ability(), gender=piecedSpawn.Gender(), species=piecedSpawn.Species(), altform=piecedSpawn.AltForm())
+        r = Raid(
+            seed,
+            TID=b.TID,
+            SID=b.SID,
+            flawlessiv=piecedSpawn.FlawlessIVs(),
+            shinyLock=piecedShinyLock,
+            ability=piecedSpawn.Ability(),
+            gender=piecedSpawn.Gender(),
+            species=piecedSpawn.Species(),
+            altform=piecedSpawn.AltForm(),
+        )
         seed = XOROSHIRO(seed).next()
 
         if useFilters:
-            if (r.ShinyType != "None" or r.IVs == V6 or r.IVs == S0 or r.IVs == A0) and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Careful":
+            if (
+                r.ShinyType != "None" or r.IVs == V6 or r.IVs == S0 or r.IVs == A0
+            ) and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Careful":
                 print(f"Frame:{i}")
                 r.print()
                 print()

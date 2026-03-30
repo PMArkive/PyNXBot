@@ -1,5 +1,6 @@
 from structure.ByteStruct import ByteStruct
 
+
 class BDSPEgg(ByteStruct):
     SIZE = 0x10
 

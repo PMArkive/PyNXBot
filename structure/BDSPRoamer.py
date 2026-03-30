@@ -1,8 +1,9 @@
 from rng import Generator
 from structure.ByteStruct import ByteStruct
 
+
 class BDSPRoamer(ByteStruct):
-    def __init__(self,buf,TID,SID):
+    def __init__(self, buf, TID, SID):
         self.data = bytearray(buf[:])
         self.TID = TID
         self.SID = SID
@@ -21,6 +22,8 @@ class BDSPRoamer(ByteStruct):
 
         for i in range(2):
             r = Generator(0, self.ec(i), self.TID, self.SID, "r", 3)
-            print(f"Species: {Util(GameVersion.SWSH).STRINGS.species[self.species(i)]}\tHP: {self.hp(i)}")
+            print(
+                f"Species: {Util(GameVersion.SWSH).STRINGS.species[self.species(i)]}\tHP: {self.hp(i)}"
+            )
             r.print()
             print()

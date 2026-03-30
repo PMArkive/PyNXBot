@@ -7,10 +7,12 @@ from lookups import Util, GameVersion
 from rng import XORSHIFT, Generator
 from nxbot import BDSPBot
 
+
 # CTRL+C handler
 def signal_handler(signal, advances):
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -35,17 +37,31 @@ while True:
     seed = b.getSeed()
     tmpRNG = XORSHIFT(seed)
     print("Initial Seed")
-    print(f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}")
+    print(
+        f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}"
+    )
     print()
     print("Searchig...")
     found = False
     i = 0
 
     while i < MaxAdvances:
-        r = Generator(tmpRNG.state(), tmpRNG.next(), b.TrainerSave.TID(), b.TrainerSave.SID(), encounterType, 3)
+        r = Generator(
+            tmpRNG.state(),
+            tmpRNG.next(),
+            b.TrainerSave.TID(),
+            b.TrainerSave.SID(),
+            encounterType,
+            3,
+        )
 
         if usefilters:
-            if r.ShinyType != "None" and (r.IVs == A0 or r.IVs == V6): #and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Adamant" and (r.IVs == V6 or  or r.IVs == S0):
+            if (
+                r.ShinyType != "None"
+                and (r.IVs == A0 or r.IVs == V6)
+                # and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Adamant"
+                # and (r.IVs == V6 or r.IVs == A0 or r.IVs == S0)
+            ):
                 print(f"\nAdvances: {i}")
                 r.print()
                 print()

@@ -10,6 +10,7 @@ pmtext = PKMString("zh")
 buf = bytearray(open("../resources/bytes/personal_swsh", "rb").read())
 pt = PersonalTable(buf)
 
+
 def getString(slist):
     if slist[0] == slist[1]:
         return slist[0]
@@ -20,6 +21,7 @@ def getString(slist):
             output += "{{tt|" + slist[ii] + "|" + WC8.LANG[ii] + "}}<br>"
 
         return output[:-4]
+
 
 def getribbon(flag):
     if flag[0] == 16:
@@ -40,6 +42,7 @@ def getribbon(flag):
 
     return flag
 
+
 def getndex(species, forme):
     output = f"{species:03}"
 
@@ -51,6 +54,7 @@ def getndex(species, forme):
 
     if species in PersonalTable.Galarlist:
         return output + "G"
+
 
 epath = "./Event/Wondercards/"
 
@@ -74,9 +78,9 @@ for file in os.listdir(epath):
         otlist.append(wc.ownername(idx))
 
     if wc.isHome():
-        print('''{{活动赠送宝可梦\n|gen=8\n|game=HOME''')
+        print("""{{活动赠送宝可梦\n|gen=8\n|game=HOME""")
     else:
-        print('''{{活动赠送宝可梦\n|gen=8\n|game=SWSH''')
+        print("""{{活动赠送宝可梦\n|gen=8\n|game=SWSH""")
 
     print(f"|ndex={getndex(wc.species(), wc.forme())}")
     print(f"|pokemon={pmtext.species[wc.species()]}")
@@ -142,7 +146,9 @@ for file in os.listdir(epath):
     if wc.isHome():
         print(f"|inhand= Pokémon HOME（[[命中注定般的相遇]]）")
     else:
-        print(f"|inhand= {pmtext.locations[wc.metLocation() - 40001]}（[[命中注定般的相遇]]）")
+        print(
+            f"|inhand= {pmtext.locations[wc.metLocation() - 40001]}（[[命中注定般的相遇]]）"
+        )
 
     if wc.nature() < 25:
         print(f"|nature={pmtext.natures[wc.nature()]}")
@@ -158,7 +164,14 @@ for file in os.listdir(epath):
         else:
             return "?"
 
-    if wc.IV_HP() < 32 or wc.IV_Atk() < 32 or wc.IV_Def() < 32 or wc.IV_SpA() < 32 or wc.IV_SpD() < 32 or wc.IV_Spe() < 32:
+    if (
+        wc.IV_HP() < 32
+        or wc.IV_Atk() < 32
+        or wc.IV_Def() < 32
+        or wc.IV_SpA() < 32
+        or wc.IV_SpD() < 32
+        or wc.IV_Spe() < 32
+    ):
         print(f"|IVHP={getiv(wc.IV_HP())}")
         print(f"|IVAtk={getiv(wc.IV_Atk())}")
         print(f"|IVDef={getiv(wc.IV_Def())}")
@@ -166,7 +179,10 @@ for file in os.listdir(epath):
         print(f"|IVSpD={getiv(wc.IV_SpD())}")
         print(f"|IVSp={getiv(wc.IV_Spe())}")
 
-    if wc.EV_HP() + wc.EV_Atk() + wc.EV_Def() + wc.EV_SpA() + wc.EV_SpD() +  wc.EV_Spe() > 0:
+    if (
+        wc.EV_HP() + wc.EV_Atk() + wc.EV_Def() + wc.EV_SpA() + wc.EV_SpD() + wc.EV_Spe()
+        > 0
+    ):
         print(f"|EVHP={wc.EV_HP()}")
         print(f"|EVAtk={wc.EV_Atk()}")
         print(f"|EVDef={wc.EV_Def()}")
@@ -174,13 +190,15 @@ for file in os.listdir(epath):
         print(f"|EVSpD={wc.EV_SpD()}")
         print(f"|EVSp={wc.EV_Spe()}")
 
-    catlist =["变化", "物理", "特殊"]
+    catlist = ["变化", "物理", "特殊"]
 
     for ii in range(4):
         if wc.move(ii) > 0:
-            print(f"|move{ii + 1}={pmtext.moves[wc.move(ii)]}|move{ii + 1}type={pmtext.movetypes[wc.move(ii)]}|move{ii + 1}cat={catlist[pmtext.movecats[wc.move(ii)]]}")
+            print(
+                f"|move{ii + 1}={pmtext.moves[wc.move(ii)]}|move{ii + 1}type={pmtext.movetypes[wc.move(ii)]}|move{ii + 1}cat={catlist[pmtext.movecats[wc.move(ii)]]}"
+            )
 
     if wc.isHome():
-        print('''|receivegame={{GameIconzh/8|HOME}}\n}}\n''')
+        print("""|receivegame={{GameIconzh/8|HOME}}\n}}\n""")
     else:
-        print('''|receivegame={{GameIconzh/8|SWSH}}\n}}\n''')
+        print("""|receivegame={{GameIconzh/8|SWSH}}\n}}\n""")

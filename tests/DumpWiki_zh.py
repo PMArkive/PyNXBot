@@ -5,16 +5,24 @@ sys.path.append("../")
 
 from flatbuffers.compat import import_numpy
 from lookups import PKMString
-from structure import Den, NestHoleReward8Archive, NestHoleDistributionEncounter8Archive, NestHoleCrystalEncounter8Archive, NestHoleDistributionReward8Archive, PersonalTable
+from structure import (
+    Den,
+    NestHoleReward8Archive,
+    NestHoleDistributionEncounter8Archive,
+    NestHoleCrystalEncounter8Archive,
+    NestHoleDistributionReward8Archive,
+    PersonalTable,
+)
 
 Path = "Event/PersonalDump/"
 ShortVersion = False
 OneTable = False
 DumpCrystal = False
 Island = 0
-eventstyle = "" #"style = "background:#ffe4c3" |"
+eventstyle = ""  # "style = "background:#ffe4c3" |"
 
 np = import_numpy()
+
 
 def getstars(rank):
     stars = "★"
@@ -24,6 +32,7 @@ def getstars(rank):
 
     return stars
 
+
 def getitem(itemid):
     if itemid >= 1130 and itemid <= 1229:
         tr = itemid - 1130
@@ -32,47 +41,151 @@ def getitem(itemid):
     else:
         return "{{Bag|" + pmtext.items[itemid] + "}}{{i|" + pmtext.items[itemid] + "}}"
 
+
 def getspecies(species, isgmax=False, formid=0, isShiny=False):
     formtext = pmtext.forms[pt.getFormeNameIndex(species, formid)]
 
     if species == 849:
-        t = "{{MSP|" + f"{species:03}" + ("GM" if isgmax else "L" if formid == 1 else "") + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + ("GM" if isgmax else "L" if formid == 1 else "")
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species == 868:
-        t = "{{MSP|" + f"{species:03}" + "}}<br>[[" + pmtext.species[species] + "]]" + ("<br />[[File:极巨化 Sprite.png|link=极巨化]]" if isgmax else "")
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]"
+            + ("<br />[[File:极巨化 Sprite.png|link=极巨化]]" if isgmax else "")
+        )
     elif species == 869:
-        t = "{{MSP|" + f"{species:03}" + ("GM" if isgmax else "") + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + ("GM" if isgmax else "")
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species == 678 or species == 876:
-        t = "{{MSP|" + f"{species:03}" + ("F" if formid else "") + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + ("F" if formid else "")
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species in PersonalTable.Alolalist and formid == 1:
-        t = "{{MSP|" + f"{species:03}" + "A}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + "A}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species in PersonalTable.Galarlist and formid:
-        t = "{{MSP|" + f"{species:03}" + "G}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + "G}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species in [422, 423]:
-        t = "{{MSP|" + f"{species:03}" + ("E" if formid else "") + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + ("E" if formid else "")
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species in [710, 711]:
-        t = "{{MSP|" + f"{species:03}" + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     elif species == 479 and formid > 0:
         if formid == 1:
             rotomform = "H"
         else:
             rotomform = "W"
 
-        t = "{{MSP|" + f"{species:03}" + rotomform + "}}<br>[[" + pmtext.species[species] + "]]<br><small>" + formtext + "</small>"
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + rotomform
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]<br><small>"
+            + formtext
+            + "</small>"
+        )
     else:
-        t = "{{MSP|" + f"{species:03}" + ("GM" if isgmax else "") + "}}<br>[[" + pmtext.species[species] + "]]" + (f"<br>形态数:{formid}" if formid > 0 else "")
+        t = (
+            "{{MSP|"
+            + f"{species:03}"
+            + ("GM" if isgmax else "")
+            + "}}<br>[["
+            + pmtext.species[species]
+            + "]]"
+            + (f"<br>形态数:{formid}" if formid > 0 else "")
+        )
 
     if isShiny:
         t += "<br>[[File:ShinySWSHStar.png]]"
 
     return t
 
-def getmsg1(entry, rank, isCrystal = False):
-    return "| " + getspecies(entry.Species(), entry.IsGigantamax(), entry.AltForm(), entry.ShinyFlag() == 2) + (f" || {getstars(rank)} || " if isCrystal else f" || {entry.Probabilities(rank)}% || ")
 
-def getmsg2(entry, rank, isCrystal = False):
+def getmsg1(entry, rank, isCrystal=False):
+    return (
+        "| "
+        + getspecies(
+            entry.Species(),
+            entry.IsGigantamax(),
+            entry.AltForm(),
+            entry.ShinyFlag() == 2,
+        )
+        + (
+            f" || {getstars(rank)} || "
+            if isCrystal
+            else f" || {entry.Probabilities(rank)}% || "
+        )
+    )
+
+
+def getmsg2(entry, rank, isCrystal=False):
     pi = pt.getFormeEntry(entry.Species(), entry.AltForm())
     msg = f"{entry.Level()}" + " || "
-    msg += (f"{entry.IVHp()}/{entry.IVAtk()}/{entry.IVDef()}/{entry.IVSpAtk()}/{entry.IVSpDef()}/{entry.IVSpe()} || " if isCrystal else (f"{entry.FlawlessIVs()}" + " || "))
+    msg += (
+        f"{entry.IVHp()}/{entry.IVAtk()}/{entry.IVDef()}/{entry.IVSpAtk()}/{entry.IVSpDef()}/{entry.IVSpe()} || "
+        if isCrystal
+        else (f"{entry.FlawlessIVs()}" + " || ")
+    )
     msg += f"{entry.Shield()}" + " || "
     msg += f"{entry.DynamaxLevel()}" + " || "
     msg += f"{entry.DynamaxBoost():0.1f}" + "× || "
@@ -91,10 +204,20 @@ def getmsg2(entry, rank, isCrystal = False):
     msg += "}}"
 
     if entry.AdditionalMove1Rate() > 0 and entry.AdditionalMove1PP() > 0:
-        msg += "<br><br>{{m|" + f"{pmtext.moves[entry.AdditionalMove1()]}" + "}}<br>" + f"({entry.AdditionalMove1Rate()}% - {entry.AdditionalMove1PP()}PP)"
+        msg += (
+            "<br><br>{{m|"
+            + f"{pmtext.moves[entry.AdditionalMove1()]}"
+            + "}}<br>"
+            + f"({entry.AdditionalMove1Rate()}% - {entry.AdditionalMove1PP()}PP)"
+        )
 
     if entry.AdditionalMove2Rate() > 0 and entry.AdditionalMove2PP() > 0:
-        msg += "<br>{{m|" + f"{pmtext.moves[entry.AdditionalMove2()]}" + "}}<br>" + f"({entry.AdditionalMove2Rate()}% - {entry.AdditionalMove2PP()}PP)"
+        msg += (
+            "<br>{{m|"
+            + f"{pmtext.moves[entry.AdditionalMove2()]}"
+            + "}}<br>"
+            + f"({entry.AdditionalMove2Rate()}% - {entry.AdditionalMove2PP()}PP)"
+        )
 
     msg += " || "
 
@@ -113,7 +236,7 @@ def getmsg2(entry, rank, isCrystal = False):
 
     # look up event drop tables
     for jj in range(dropreward.TablesLength()):
-        edt = dropreward.Tables(jj) # event drop table
+        edt = dropreward.Tables(jj)  # event drop table
 
         if dropid == edt.TableID():
             msg += eventstyle
@@ -122,9 +245,9 @@ def getmsg2(entry, rank, isCrystal = False):
                 edte = edt.Entries(kk)
 
                 if rank == 0:
-                     value = edte.Value0()
+                    value = edte.Value0()
                 elif rank == 1:
-                     value = edte.Value1()
+                    value = edte.Value1()
                 elif rank == 2:
                     value = edte.Value2()
                 elif rank == 3:
@@ -152,7 +275,7 @@ def getmsg2(entry, rank, isCrystal = False):
 
     # look up event bonus tables
     for jj in range(bonusreward.TablesLength()):
-        ebt = bonusreward.Tables(jj) # event bonus table
+        ebt = bonusreward.Tables(jj)  # event bonus table
 
         if bonusid == ebt.TableID():
             msg += eventstyle
@@ -161,9 +284,9 @@ def getmsg2(entry, rank, isCrystal = False):
                 ebte = ebt.Entries(kk)
 
                 if rank == 0:
-                     value = ebte.Value0()
+                    value = ebte.Value0()
                 elif rank == 1:
-                     value = ebte.Value1()
+                    value = ebte.Value1()
                 elif rank == 2:
                     value = ebte.Value2()
                 elif rank == 3:
@@ -181,9 +304,9 @@ def getmsg2(entry, rank, isCrystal = False):
     if entry.ShinyFlag() == 1:
         comment += "不可能为异色<br>"
     elif entry.ShinyFlag() == 2:
-        pass # comment += "必定异色<br>"
+        pass  # comment += "必定异色<br>"
     if entry.Ability() == 4:
-        pass # comment += f"特性:随机可梦特<br>"
+        pass  # comment += f"特性:随机可梦特<br>"
     elif entry.Ability() == 3:
         comment += f"不可能有隐藏特性<br>"
     elif entry.Ability() == 2:
@@ -194,18 +317,19 @@ def getmsg2(entry, rank, isCrystal = False):
         comment += f"必定为第一特性（{{{{a|{pmtext.abilities[pi.Ability1()]}}}}}) <br>"
 
     if entry.Nature() == 25:
-        pass # random nature
+        pass  # random nature
     else:
         comment += f"性格:{pmtext.natures[entry.Nature()]}<br>"
 
     # if not isCrystal and entry.Field13() > 4:
-        # comment += f"不能捕获<br>"
+    #     comment += f"不能捕获<br>"
 
     # if entry.AltForm() > 0:
     #     comment += f"形态数:{entry.AltForm()}<br>"
 
-    msg += ("-" if comment == "" else comment[:-4])
+    msg += "-" if comment == "" else comment[:-4]
     return msg
+
 
 def getspecies_short(species, isgmax=False, formid=0):
     if species == 849 or species == 869:
@@ -215,11 +339,14 @@ def getspecies_short(species, isgmax=False, formid=0):
 
     return t
 
+
 def getform_short(species, isgmax=False, formid=0, isShiny=False):
     t = ""
     formtext = pmtext.forms[pt.getFormeNameIndex(species, formid)]
 
-    if species in [422, 423, 849, 869, 678, 876, 710, 711] or ((species in pt.Galarlist or species in pt.Alolalist) and formid):
+    if species in [422, 423, 849, 869, 678, 876, 710, 711] or (
+        (species in pt.Galarlist or species in pt.Alolalist) and formid
+    ):
         t = f"|form={formtext}"
 
     if isgmax:
@@ -229,6 +356,7 @@ def getform_short(species, isgmax=False, formid=0, isShiny=False):
         t = "|form=异色" if t == "" else (t + "<br>异色")
 
     return t
+
 
 def gettype_short(species, formid=0):
     pi = pt.getFormeEntry(species, formid)
@@ -240,12 +368,22 @@ def gettype_short(species, formid=0):
     else:
         return "type1=" + type1 + "|type2=" + type2
 
+
 def getmsg2_short(entry, rank):
     msg = f"|团体战|{entry.Level()}|{entry.Probabilities(rank)}%|"
     msg += gettype_short(entry.Species(), entry.AltForm())
-    msg += getform_short(entry.Species(), entry.IsGigantamax(), entry.AltForm(), entry.ShinyFlag() == 2) + "}}"
+    msg += (
+        getform_short(
+            entry.Species(),
+            entry.IsGigantamax(),
+            entry.AltForm(),
+            entry.ShinyFlag() == 2,
+        )
+        + "}}"
+    )
 
     return msg
+
 
 pmtext = PKMString("zh")
 buf = bytearray(open("../resources/bytes/local_drop", "rb").read())
@@ -255,14 +393,32 @@ bonus = NestHoleReward8Archive.GetRootAsNestHoleReward8Archive(buf, 0)
 buf = bytearray(open("../resources/bytes/personal_swsh", "rb").read())
 pt = PersonalTable(buf)
 
-buf = bytearray(open(Path + "normal_encount", "rb").read()) if Island == 0 else bytearray(open(Path + f"normal_encount_rigel{Island}", "rb").read())
-eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(buf, 0x20)
+buf = (
+    bytearray(open(Path + "normal_encount", "rb").read())
+    if Island == 0
+    else bytearray(open(Path + f"normal_encount_rigel{Island}", "rb").read())
+)
+eventencounter = NestHoleDistributionEncounter8Archive.GetRootAsNestHoleDistributionEncounter8Archive(
+    buf, 0x20
+)
 buf = bytearray(open(Path + "drop_rewards", "rb").read())
-dropreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+dropreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 buf = bytearray(open(Path + "bonus_rewards", "rb").read())
-bonusreward = NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(buf, 0x20)
+bonusreward = (
+    NestHoleDistributionReward8Archive.GetRootAsNestHoleDistributionReward8Archive(
+        buf, 0x20
+    )
+)
 buf = bytearray(open(Path + "dai_encount", "rb").read())
-crystalencounter = NestHoleCrystalEncounter8Archive.GetRootAsNestHoleCrystalEncounter8Archive(buf, 0x20)
+crystalencounter = (
+    NestHoleCrystalEncounter8Archive.GetRootAsNestHoleCrystalEncounter8Archive(
+        buf, 0x20
+    )
+)
 
 tablenum = eventencounter.TablesLength()
 tablelength = eventencounter.Tables(0).EntriesLength()
@@ -276,37 +432,53 @@ if ShortVersion:
 
     for star in range(5):
         stars = getstars(star)
-        print("{{捕捉/div|红|"+ stars + "}}")
+        print("{{捕捉/div|红|" + stars + "}}")
 
         for ii in range(tablelength):
             entry1 = eventencounter.Tables(0).Entries(ii)
             entry2 = eventencounter.Tables(1).Entries(ii)
 
-            if entry1.Species() == entry2.Species() and entry1.AltForm() == entry2.AltForm() and entry1.IsGigantamax() == entry2.IsGigantamax() and entry1.ShinyFlag() == entry2.ShinyFlag() and entry1.Probabilities(star) == entry2.Probabilities(star):
+            if (
+                entry1.Species() == entry2.Species()
+                and entry1.AltForm() == entry2.AltForm()
+                and entry1.IsGigantamax() == entry2.IsGigantamax()
+                and entry1.ShinyFlag() == entry2.ShinyFlag()
+                and entry1.Probabilities(star) == entry2.Probabilities(star)
+            ):
                 # Same entry
 
                 if entry1.Probabilities(star) > 0:
-                    msg = header + getspecies_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm())
+                    msg = header + getspecies_short(
+                        entry1.Species(), entry1.IsGigantamax(), entry1.AltForm()
+                    )
                     msg += "|yes|yes"
                     msg += getmsg2_short(entry1, star)
                     print(msg)
             else:
                 if entry1.Probabilities(star) > 0:
-                    msg = header + getspecies_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm())
+                    msg = header + getspecies_short(
+                        entry1.Species(), entry1.IsGigantamax(), entry1.AltForm()
+                    )
                     msg += "|yes|no"
                     msg += getmsg2_short(entry1, star)
                     print(msg)
 
                 if entry2.Probabilities(star) > 0:
-                    msg = header + getspecies_short(entry2.Species(), entry2.IsGigantamax(), entry2.AltForm())
+                    msg = header + getspecies_short(
+                        entry2.Species(), entry2.IsGigantamax(), entry2.AltForm()
+                    )
                     msg += "|no|yes"
                     msg += getmsg2_short(entry2, star)
                     print(msg)
 
     print("{{捕捉/footer|红}}")
 elif OneTable:
-    print('{| class="roundy bg-Sw bd-Sh" style="text-align:center; margin:auto; border:3px solid')
-    print("! 宝可梦 !! 几率 !! 版本 !! 等级 !! 完美<br>个体数 !! 护盾数 !! 极巨化<br>等级 !! 极巨化<br>提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注")
+    print(
+        '{| class="roundy bg-Sw bd-Sh" style="text-align:center; margin:auto; border:3px solid'
+    )
+    print(
+        "! 宝可梦 !! 几率 !! 版本 !! 等级 !! 完美<br>个体数 !! 护盾数 !! 极巨化<br>等级 !! 极巨化<br>提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注"
+    )
     header = '|- style="background:white"\n'
 
     for star in range(5):
@@ -320,7 +492,12 @@ elif OneTable:
             if entry1.Probabilities(star) > 0:
                 entry2 = eventencounter.Tables(1).Entries(ii)
 
-                if entry1.Species() == entry2.Species() and entry1.AltForm() == entry2.AltForm() and entry1.IsGigantamax() == entry2.IsGigantamax() and entry1.ShinyFlag() == entry2.ShinyFlag():
+                if (
+                    entry1.Species() == entry2.Species()
+                    and entry1.AltForm() == entry2.AltForm()
+                    and entry1.IsGigantamax() == entry2.IsGigantamax()
+                    and entry1.ShinyFlag() == entry2.ShinyFlag()
+                ):
                     # Same entry
                     msg = header + getmsg1(entry1, star)
                     msg += "{{GameIconzh/8|SWSH}} || "
@@ -337,17 +514,19 @@ elif OneTable:
                     print(msg)
 
     print("|}\n\n\n")
-else: # Full version
+else:  # Full version
     print("__TOC__")
 
     for ii in range(eventencounter.TablesLength()):
         table = eventencounter.Tables(ii)
         ver = "剑" if table.GameVersion() == 1 else "盾"
         ver2 = "SW" if table.GameVersion() == 1 else "SH"
-        print("=={{game|"+ ver2 + "}}==")
+        print("=={{game|" + ver2 + "}}==")
         print('{| class="bg-' + ver + " bd-" + ver + ' roundy at-c eplist"')
         print('|- class="bgl-' + ver + '"')
-        print("! ★(几率) !! 宝可梦 !! 等级 !! 完美个体数 !! 护盾数 !! 极巨化等级 !! 极巨化提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注")
+        print(
+            "! ★(几率) !! 宝可梦 !! 等级 !! 完美个体数 !! 护盾数 !! 极巨化等级 !! 极巨化提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注"
+        )
         print('|- style="background:white"')
         print(f'! colspan="11" | Nest ID: {table.TableID()}')
 
@@ -361,8 +540,16 @@ else: # Full version
 
                 for r in rank:
                     msg += getstars(r) + "<br>(" + f"{entry.Probabilities(r)}%)<br>"
-                msg =  msg[:-4] + " || "
-                msg += getspecies(entry.Species(), entry.IsGigantamax(), entry.AltForm(), entry.ShinyFlag() == 2) + " || "
+                msg = msg[:-4] + " || "
+                msg += (
+                    getspecies(
+                        entry.Species(),
+                        entry.IsGigantamax(),
+                        entry.AltForm(),
+                        entry.ShinyFlag() == 2,
+                    )
+                    + " || "
+                )
                 msg += getmsg2(entry, rank)
                 print(msg)
 
@@ -384,26 +571,52 @@ if DumpCrystal:
             rank = Den.getCrystalRank(entry1.Level())
             entry2 = crystalencounter.Tables(1).Entries(ii)
 
-            if entry1.Species() == entry2.Species() and entry1.AltForm() == entry2.AltForm() and entry1.IsGigantamax() == entry2.IsGigantamax() and entry1.ShinyFlag() == entry2.ShinyFlag():
+            if (
+                entry1.Species() == entry2.Species()
+                and entry1.AltForm() == entry2.AltForm()
+                and entry1.IsGigantamax() == entry2.IsGigantamax()
+                and entry1.ShinyFlag() == entry2.ShinyFlag()
+            ):
                 # Same entry
-                msg = header + getspecies_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm())
+                msg = header + getspecies_short(
+                    entry1.Species(), entry1.IsGigantamax(), entry1.AltForm()
+                )
                 msg += "|" + gettype_short(entry1.Species(), entry1.AltForm())
-                msg += getform_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm(), False)
-                msg += f"|yes|yes|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}" + "}}}}"
+                msg += getform_short(
+                    entry1.Species(), entry1.IsGigantamax(), entry1.AltForm(), False
+                )
+                msg += (
+                    f"|yes|yes|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}"
+                    + "}}}}"
+                )
                 print(msg)
             else:
-                msg = header + getspecies_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm())
+                msg = header + getspecies_short(
+                    entry1.Species(), entry1.IsGigantamax(), entry1.AltForm()
+                )
                 msg += "|" + gettype_short(entry1.Species(), entry1.AltForm())
-                msg += f"|yes|no|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}" + "}}}}"
+                msg += (
+                    f"|yes|no|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}"
+                    + "}}}}"
+                )
                 print(msg)
-                msg = header + getspecies_short(entry1.Species(), entry1.IsGigantamax(), entry1.AltForm())
+                msg = header + getspecies_short(
+                    entry1.Species(), entry1.IsGigantamax(), entry1.AltForm()
+                )
                 msg += "|" + gettype_short(entry2.Species(), entry2.AltForm())
-                msg += f"|no|yes|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}" + "}}}}"
+                msg += (
+                    f"|no|yes|投放极巨结晶|{entry1.Level()}|{{{{tt|一只|兑换序列号}}}}"
+                    + "}}}}"
+                )
                 print(msg)
     else:
         eventstyle = ""
-        print('{| class="roundy bg-Sw bd-Sh" style="text-align:center; margin:auto; border:3px solid')
-        print("! 极巨结晶 !! 宝可梦 !! ★ !! 版本 !! 等级 !! 个体 !! 护盾数 !! 极巨化<br>等级 !! 极巨化<br>提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注")
+        print(
+            '{| class="roundy bg-Sw bd-Sh" style="text-align:center; margin:auto; border:3px solid'
+        )
+        print(
+            "! 极巨结晶 !! 宝可梦 !! ★ !! 版本 !! 等级 !! 个体 !! 护盾数 !! 极巨化<br>等级 !! 极巨化<br>提升 !! 招式  !! 可能获得的奖励道具  !! 奖励糖果 !! 备注"
+        )
         header0 = '|- style="background:white"\n'
 
         for ii in range(tablelength):
@@ -416,7 +629,12 @@ if DumpCrystal:
             rank = Den.getCrystalRank(entry1.Level())
             entry2 = crystalencounter.Tables(1).Entries(ii)
 
-            if entry1.Species() == entry2.Species() and entry1.AltForm() == entry2.AltForm() and entry1.IsGigantamax() == entry2.IsGigantamax() and entry1.ShinyFlag() == entry2.ShinyFlag():
+            if (
+                entry1.Species() == entry2.Species()
+                and entry1.AltForm() == entry2.AltForm()
+                and entry1.IsGigantamax() == entry2.IsGigantamax()
+                and entry1.ShinyFlag() == entry2.ShinyFlag()
+            ):
                 # Same entry
                 msg = header + getmsg1(entry1, rank, isCrystal=True)
                 msg += "{{GameIconzh/8|SWSH}} || "

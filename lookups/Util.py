@@ -2,9 +2,11 @@ from lookups import PKMString
 from lookups.GameVersion import GameVersion
 import os
 
-class Util():
+
+class Util:
     def __init__(self, ver=GameVersion.SWSH, gen=""):
         from structure import PersonalTable
+
         self.STRINGS = PKMString(gen=gen)
 
         if ver == GameVersion.SWSH:
@@ -12,8 +14,11 @@ class Util():
         elif ver == GameVersion.FRLG:
             self.path = "/../resources/bytes/personal_rsefrlg"
 
-        self.PT = PersonalTable(bytearray(open(os.path.dirname(__file__) + self.path, "rb").read()), ver=GameVersion.FRLG)
-        self.GenderSymbol = ["♂","♀","-"]
+        self.PT = PersonalTable(
+            bytearray(open(os.path.dirname(__file__) + self.path, "rb").read()),
+            ver=GameVersion.FRLG,
+        )
+        self.GenderSymbol = ["♂", "♀", "-"]
 
     @staticmethod
     def translate(lang):
@@ -23,6 +28,7 @@ class Util():
     def convertImage(filename):
         import colorsys, numpy
         from PIL import Image
+
         image = Image.open(filename).convert("RGBA")
         h = image.height
         w = image.width
@@ -44,7 +50,8 @@ class Util():
     def generatePallete(hsv_array, size=32):
         # Crop the image
         import numpy
-        h , w , d = hsv_array.shape
+
+        h, w, d = hsv_array.shape
 
         if h > size:
             top = (h - size) // 2
@@ -83,7 +90,7 @@ class Util():
                 idx = Util(GameVersion.SWSH).findinlist(HVB, Colorlist)
 
                 if idx < 0:
-                    Colorlist = numpy.append(Colorlist, [HVB], axis = 0)
+                    Colorlist = numpy.append(Colorlist, [HVB], axis=0)
                     hsv_array[r, c, 4] = len(Colorlist) - 1
                 else:
                     hsv_array[r, c, 4] = idx
@@ -93,6 +100,7 @@ class Util():
     @staticmethod
     def convert2HVB(hsv):
         import math
+
         H = min(29, math.floor(hsv[0] * 30))
         V = min(14, math.floor(hsv[1] * 15))
         B = min(14, math.floor(hsv[2] * 15))

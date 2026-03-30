@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class GameVersion(Enum):
     SWSH = 0
     BDSP = 1

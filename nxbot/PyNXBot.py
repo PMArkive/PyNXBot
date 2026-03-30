@@ -3,6 +3,7 @@ from time import sleep
 from enum import Enum
 from structure import Screen
 
+
 class SystemLanguage(Enum):
     JA = 0
     ENUS = 1
@@ -21,6 +22,7 @@ class SystemLanguage(Enum):
     ZHHANS = 15
     ZHHANT = 16
 
+
 class NXBot(object):
     def __init__(self, ip, port=6000):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,13 +39,13 @@ class NXBot(object):
         self.sendCommand("configure mainLoopSleepTime 0")
 
     def sendCommand(self, content):
-        content += "\r\n" #important for the parser on the switch side
+        content += "\r\n"  # important for the parser on the switch side
         self.s.sendall(content.encode())
 
     def detach(self):
         self.sendCommand("detachController")
 
-    def close(self,exitapp = True):
+    def close(self, exitapp=True):
         print("Exiting...")
         self.pause(0.5)
         self.detach()
@@ -86,8 +88,8 @@ class NXBot(object):
 
         self.moveStick("RIGHT", self.rs_lastx, self.rs_lasty)
 
-    #peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
-    #poke <address in hex, prefaced by 0x> <data, if in hex prefaced with 0x>
+    # peek <address in hex, prefaced by 0x> <amount of bytes, dec or hex with 0x>
+    # poke <address in hex, prefaced by 0x> <data, if in hex prefaced with 0x>
     def read(self, address, size, filename=None):
         self.sendCommand(f"peek 0x{address:X} 0x{size:X}")
         sleep(size / 0x8000)
@@ -108,7 +110,9 @@ class NXBot(object):
 
     def read_pointer(self, pointer, size, filename=None):
         jumps = pointer.replace("[", "").replace("main", "").split("]")
-        self.sendCommand(f"pointerPeek 0x{size:X} 0x{" 0x".join(jump.replace("+", "") for jump in jumps)}")
+        self.sendCommand(
+            f"pointerPeek 0x{size:X} 0x{" 0x".join(jump.replace("+", "") for jump in jumps)}"
+        )
         sleep(size / 0x8000)
         buf = self.s.recv(2 * size + 1)
         buf = binascii.unhexlify(buf[0:-1])
@@ -175,43 +179,6 @@ class NXBot(object):
         self.pause(0.2)
         self.click("A")
 
-    def skipIntroAnimation(self): #luxray = False
-        skip = False
-        self.pause(14.7)
-
-        while skip is not True:
-            self.pause(0.3)
-            currScreen = Screen(self.readScreenOff())
-
-            if currScreen.isIntroAnimationSkippable():
-                skip = True
-            else:
-                self.click("A")
-
-        #self.pause(20.5)
-        #currScreen.isIntroAnimationSkippable()
-
-        #if luxray:
-            #self.pause(1.3)
-
-        print("Skip animation")
-
-        for i in range(10):
-            self.click("A") #A to skip anim
-            self.pause(0.5)
-
-        #self.pause(8)
-
-        skipped = False
-
-        while skipped is not True:
-            currScreen = Screen(self.readOverworldCheck())
-
-            if currScreen.overworldCheck():
-                skipped = True
-
-            self.pause(0.5)
-
     def saveGame(self):
         print("Saving...")
         self.click("X")
@@ -260,6 +227,7 @@ class NXBot(object):
         else:
             print("Wrong Species/Stars - Resets:", self.resets)
 
+
 class SWSHBot(NXBot):
     PK8STOREDSIZE = 0x148
     PK8PARTYSIZE = 0x158
@@ -268,11 +236,14 @@ class SWSHBot(NXBot):
     def __init__(self, ip, port=6000):
         NXBot.__init__(self, ip, port)
         from structure import MyStatus8
+
         self.TrainerSave = MyStatus8(self.readTrainerBlock())
         self.eventoffset = 0
 
         if self.TrainerSave.isPokemonSave():
-            print(f"Game: {self.TrainerSave.GameVersion()}    OT: {self.TrainerSave.OT()}    ID: {self.TrainerSave.displayID()}\n")
+            print(
+                f"Game: {self.TrainerSave.GameVersion()}    OT: {self.TrainerSave.OT()}    ID: {self.TrainerSave.displayID()}\n"
+            )
             self.isPlayingSword = self.TrainerSave.isSword()
             self.getEventOffset(self.getSystemLanguage())
             self.TID = self.TrainerSave.TID()
@@ -295,10 +266,47 @@ class SWSHBot(NXBot):
             self.eventoffset = +0x1C0
         elif language == SystemLanguage.DE:
             self.eventoffset = +0x2D0
-        else: # English
+        else:  # English
             pass
 
         return self.eventoffset
+
+    def skipIntroAnimation(self):  # luxray = False
+        skip = False
+        self.pause(14.7)
+
+        while skip is not True:
+            self.pause(0.3)
+            currScreen = Screen(self.readScreenOff())
+
+            if currScreen.isIntroAnimationSkippable():
+                skip = True
+            else:
+                self.click("A")
+
+        # self.pause(20.5)
+        # currScreen.isIntroAnimationSkippable()
+
+        # if luxray:
+        #     self.pause(1.3)
+
+        print("Skip animation")
+
+        for i in range(10):
+            self.click("A")  # A to skip anim
+            self.pause(0.5)
+
+        # self.pause(8)
+
+        skipped = False
+
+        while skipped is not True:
+            currScreen = Screen(self.readOverworldCheck())
+
+            if currScreen.overworldCheck():
+                skipped = True
+
+            self.pause(0.5)
 
     def readTrainerBlock(self):
         return self.read(0x45068F18, 0x110) + self.read(0x45072DF4, 0x3)
@@ -318,7 +326,11 @@ class SWSHBot(NXBot):
         if slot > 30:
             slot = 30
 
-        address = 0x45075880 + ((box - 1) * 30 * self.PK8PARTYSIZE) + ((slot - 1) * self.PK8PARTYSIZE)
+        address = (
+            0x45075880
+            + ((box - 1) * 30 * self.PK8PARTYSIZE)
+            + ((slot - 1) * self.PK8PARTYSIZE)
+        )
 
         return self.read(address, self.PK8PARTYSIZE)
 
@@ -347,10 +359,14 @@ class SWSHBot(NXBot):
         return self.read(0x2FA03F78 + self.eventoffset, 0x116C4, path + "bonus_rewards")
 
     def readEventBlock_RaidEncounter_IoA(self, path=""):
-        return self.read(0x2FA156F0 + self.eventoffset, 0x23D4, path + "normal_encount_rigel1")
+        return self.read(
+            0x2FA156F0 + self.eventoffset, 0x23D4, path + "normal_encount_rigel1"
+        )
 
     def readEventBlock_RaidEncounter_CT(self, path=""):
-        return self.read(0x2FA17B78 + self.eventoffset, 0x23D4, path + "normal_encount_rigel2")
+        return self.read(
+            0x2FA17B78 + self.eventoffset, 0x23D4, path + "normal_encount_rigel2"
+        )
 
     def readDen(self, denID):
         denDataSize = 0x18
@@ -360,7 +376,7 @@ class SWSHBot(NXBot):
 
         address = 0x450C8A70 + denID * denDataSize
 
-        return self.read(address,denDataSize)
+        return self.read(address, denDataSize)
 
     def readScreenOff(self):
         return self.read(0x6B30FA00, 8)
@@ -370,6 +386,7 @@ class SWSHBot(NXBot):
 
     def readBattleStart(self):
         return self.read(0x6B578EDC, 8)
+
 
 class BDSPBot(NXBot):
     PK8STOREDSIZE = 0x148
@@ -383,36 +400,36 @@ class BDSPBot(NXBot):
                 "PlayerPrefsProvider": 0x4C49098,
                 "MainRng": 0x4F8CCD0,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0x1B5215DF918BA04B: {
                 "Version": "1.1.2",
                 "PlayerPrefsProvider": 0x4E60170,
                 "MainRng": 0x4F8CCD0,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0xBC259F7EE8E79A49: {
                 "Version": "1.1.3",
                 "PlayerPrefsProvider": 0x4E853F0,
                 "MainRng": 0x4FB2050,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0x35B9D8779B195141: {
                 "Version": "1.2.0",
                 "PlayerPrefsProvider": 0x4E61DD0,
                 "MainRng": 0x4F8E750,
                 "WildPkmn": 0x7F0,
-                "PartyPkmn": 0x7F8
+                "PartyPkmn": 0x7F8,
             },
             0x94CEAE325C205C4B: {
                 "Version": "1.3.0",
                 "PlayerPrefsProvider": 0x4C90330,
                 "MainRng": 0x4FD43D0,
                 "WildPkmn": 0x800,
-                "PartyPkmn": 0x808
-            }
+                "PartyPkmn": 0x808,
+            },
         },
         0x10018E011D92000: {
             "Game": "Shining Pearl",
@@ -421,37 +438,37 @@ class BDSPBot(NXBot):
                 "PlayerPrefsProvider": 0x4E60170,
                 "MainRng": 0x4F8CCD0,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0x5D3A3B56321FFD4C: {
                 "Version": "1.1.2",
                 "PlayerPrefsProvider": 0x4E60170,
                 "MainRng": 0x4F8CCD0,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0x46D130F0873314A: {
                 "Version": "1.1.3",
                 "PlayerPrefsProvider": 0x4E853F0,
                 "MainRng": 0x4FB2050,
                 "WildPkmn": 0x7E8,
-                "PartyPkmn": 0x7F0
+                "PartyPkmn": 0x7F0,
             },
             0xD75246EC33C2F64B: {
                 "Version": "1.2.0",
                 "PlayerPrefsProvider": 0x4E61DD0,
                 "MainRng": 0x4F8E750,
                 "WildPkmn": 0x7F0,
-                "PartyPkmn": 0x7F8
+                "PartyPkmn": 0x7F8,
             },
             0x38F59CBDA2EB9C44: {
                 "Version": "1.3.0",
                 "PlayerPrefsProvider": 0x4EA7408,
                 "MainRng": 0x4FD43D0,
                 "WildPkmn": 0x800,
-                "PartyPkmn": 0x808
-            }
-        }
+                "PartyPkmn": 0x808,
+            },
+        },
     }
 
     def __init__(self, ip, port=6000):
@@ -473,19 +490,24 @@ class BDSPBot(NXBot):
 
         self.game = self.POINTERS[self.titleID]["Game"]
         self.version = self.POINTERS[self.titleID][self.buildID]["Version"]
-        self.playerPrefsProvider = self.POINTERS[self.titleID][self.buildID]["PlayerPrefsProvider"]
+        self.playerPrefsProvider = self.POINTERS[self.titleID][self.buildID][
+            "PlayerPrefsProvider"
+        ]
         self.mainRng = self.POINTERS[self.titleID][self.buildID]["MainRng"]
         self.wildPkmn = self.POINTERS[self.titleID][self.buildID]["WildPkmn"]
         self.partyPkmn = self.POINTERS[self.titleID][self.buildID]["PartyPkmn"]
         print(f"Game: {self.game}    Version: {self.version}\n")
         from structure import MyStatusBDSP
+
         self.TrainerSave = MyStatusBDSP(self.readTrainerBlock())
-        print(f"G8TID: {self.TrainerSave.displayID()}    TID: {self.TrainerSave.TID()}    SID: {self.TrainerSave.SID()}\n")
+        print(
+            f"G8TID: {self.TrainerSave.displayID()}    TID: {self.TrainerSave.TID()}    SID: {self.TrainerSave.SID()}\n"
+        )
         self.TID = self.TrainerSave.TID()
         self.SID = self.TrainerSave.SID()
 
     def getSeed(self):
-        seed = self.read_pointer(f"[main+{self.mainRng:X}]",16)
+        seed = self.read_pointer(f"[main+{self.mainRng:X}]", 16)
         s0 = int.from_bytes(seed[:4], "little")
         s1 = int.from_bytes(seed[4:8], "little")
         s2 = int.from_bytes(seed[8:12], "little")
@@ -518,135 +540,143 @@ class BDSPBot(NXBot):
         return self.read_pointer(wildPointer, self.PK8STOREDSIZE)
 
     def readRoamerBlock(self):
-        roamerPointer = f"[[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+2A0]+20"
+        roamerPointer = (
+            f"[[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+2A0]+20"
+        )
 
         return self.read_pointer(roamerPointer, self.ROAMERSBLOCKSIZE)
 
     def readTrainerBlock(self):
-        trainerBlockPointer = f"[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+E8"
+        trainerBlockPointer = (
+            f"[[[[[[main+{self.playerPrefsProvider:X}]+18]+C0]+28]+B8]]+E8"
+        )
 
         return self.read_pointer(trainerBlockPointer, 8)
 
+
 class FRLGBot(NXBot):
-        PK3FRLGPARTYSIZE = 0x64
-        PK3FRLGBOXSIZE = 0x50
+    PK3FRLGPARTYSIZE = 0x64
+    PK3FRLGBOXSIZE = 0x50
 
-        ADDRESSES = {
-            0x1006FA0233F8000: {
-                "Game": "FireRed (JPN)",
-                "VBlankCounter": 0xBD68B304,
-                "CurrentSeedAddress": 0xBD68D230
-            },
-            0x100F1E0233FA000: {
-                "Game": "LeafGreen (JPN)",
-                "VBlankCounter": 0xBD68B304,
-                "CurrentSeedAddress": 0xBD68D230
-            },
-            0x100554023408000: {
-                "Game": "FireRed (ENG)",
-                "VBlankCounter": 0xBD68B3A4,
-                "CurrentSeedAddress": 0xBD68D2D0
-            },
-            0x10034D02340E000: {
-                "Game": "LeafGreen (ENG)",
-                "VBlankCounter": 0xBD68B3A4,
-                "CurrentSeedAddress": 0xBD68D2D0
-            },
-            0x1004B3023412000: {
-                "Game": "FireRed (FRE)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x10087C02342E000: {
-                "Game": "LeafGreen (FRE)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x10092302342A000: {
-                "Game": "FireRed (ITA)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x1005C7023432000: {
-                "Game": "LeafGreen (ITA)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x1007F8023416000: {
-                "Game": "FireRed (GER)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x100FD6023430000: {
-                "Game": "LeafGreen (GER)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x100EB702342C000: {
-                "Game": "FireRed (SPA)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-            0x1002B5023434000: {
-                "Game": "LeafGreen (SPA)",
-                "VBlankCounter": 0xBD68B2F4,
-                "CurrentSeedAddress": 0xBD68D220
-            },
-        }
+    ADDRESSES = {
+        0x1006FA0233F8000: {
+            "Game": "FireRed (JPN)",
+            "VBlankCounter": 0xBD68B304,
+            "CurrentSeedAddress": 0xBD68D230,
+        },
+        0x100F1E0233FA000: {
+            "Game": "LeafGreen (JPN)",
+            "VBlankCounter": 0xBD68B304,
+            "CurrentSeedAddress": 0xBD68D230,
+        },
+        0x100554023408000: {
+            "Game": "FireRed (ENG)",
+            "VBlankCounter": 0xBD68B3A4,
+            "CurrentSeedAddress": 0xBD68D2D0,
+        },
+        0x10034D02340E000: {
+            "Game": "LeafGreen (ENG)",
+            "VBlankCounter": 0xBD68B3A4,
+            "CurrentSeedAddress": 0xBD68D2D0,
+        },
+        0x1004B3023412000: {
+            "Game": "FireRed (FRE)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x10087C02342E000: {
+            "Game": "LeafGreen (FRE)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x10092302342A000: {
+            "Game": "FireRed (ITA)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x1005C7023432000: {
+            "Game": "LeafGreen (ITA)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x1007F8023416000: {
+            "Game": "FireRed (GER)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x100FD6023430000: {
+            "Game": "LeafGreen (GER)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x100EB702342C000: {
+            "Game": "FireRed (SPA)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+        0x1002B5023434000: {
+            "Game": "LeafGreen (SPA)",
+            "VBlankCounter": 0xBD68B2F4,
+            "CurrentSeedAddress": 0xBD68D220,
+        },
+    }
 
-        def __init__(self, ip, port=6000):
-            NXBot.__init__(self, ip, port)
-            self.titleID = int(self.getTitleId(), 16)
+    def __init__(self, ip, port=6000):
+        NXBot.__init__(self, ip, port)
+        self.titleID = int(self.getTitleId(), 16)
 
-            if self.titleID == 0:
-                print("Game not running")
-                self.close()
-            elif self.titleID not in self.ADDRESSES:
-                print(f"Unsupported title: {self.titleID:016X}")
-                self.close()
+        if self.titleID == 0:
+            print("Game not running")
+            self.close()
+        elif self.titleID not in self.ADDRESSES:
+            print(f"Unsupported title: {self.titleID:016X}")
+            self.close()
 
-            self.game = self.ADDRESSES[self.titleID]["Game"]
-            self.curentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
-            self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
-            print(f"Game: {self.game}\n")
+        self.game = self.ADDRESSES[self.titleID]["Game"]
+        self.curentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
+        self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
+        print(f"Game: {self.game}\n")
 
-        def getInitialSeed(self):
-            return int.from_bytes(self.read(0x1208000, 2), "little")
+    def getInitialSeed(self):
+        return int.from_bytes(self.read(0x1208000, 2), "little")
 
-        def getCurrentSeed(self):
-            return int.from_bytes(self.read(self.curentSeedAddress, 4), "little")
+    def getCurrentSeed(self):
+        return int.from_bytes(self.read(self.curentSeedAddress, 4), "little")
 
-        def getVBlankCounter(self):
-            return int.from_bytes(self.read(self.VBlankCounter, 4), "little")
+    def getVBlankCounter(self):
+        return int.from_bytes(self.read(self.VBlankCounter, 4), "little")
 
-        def isBoxPointerInitialized(self):
-            return int.from_bytes(self.read(self.curentSeedAddress + 0x10, 4), "little") != 0
+    def isBoxPointerInitialized(self):
+        return (
+            int.from_bytes(self.read(self.curentSeedAddress + 0x10, 4), "little") != 0
+        )
 
-        '''def readTrainerBlock(self):
-                return self.read(0x45061108, 0x110)
+    """def readTrainerBlock(self):
+            return self.read(0x45061108, 0x110)
 
         def readParty(self,slot=1):
-                if slot > 5:
-                        slot = 5
-                address = 0x450BE8C0 + slot * self.PK3FRLGPARTYSIZE
-                return self.read(address, self.PK3FRLGPARTYSIZE)
+            if slot > 5:
+                    slot = 5
+            address = 0x450BE8C0 + slot * self.PK3FRLGPARTYSIZE
+
+            return self.read(address, self.PK3FRLGPARTYSIZE)
 
         def readBox(self,box = 0,slot = 0):
-                if box > 13:7
-                    box = 13
+            if box > 13:7
+                box = 13
 
-                if slot > 29:
-                    slot = 29
+            if slot > 29:
+                slot = 29
 
-                address = 0x4506D890 + box * 30 + slot * self.PK3FRLGBOXSIZE
+            address = 0x4506D890 + box * 30 + slot * self.PK3FRLGBOXSIZE
 
-                return self.read(address, self.PK3FRLGBOXSIZE)
+            return self.read(address, self.PK3FRLGBOXSIZE)
 
         def readTrade(self):
-                return self.read(0xAF285F68, self.PK3FRLGPARTYSIZE)
+            return self.read(0xAF285F68, self.PK3FRLGPARTYSIZE)
 
         def readWild(self):
-                return self.read(0x8FEA3358, self.PK3FRLGPARTYSIZE)
+            return self.read(0x8FEA3358, self.PK3FRLGPARTYSIZE)
 
         def readLegend(self):
-                return self.read(0x886BC058, self.PK3FRLGPARTYSIZE)'''
+            return self.read(0x886BC058, self.PK3FRLGPARTYSIZE)"""

@@ -1,4 +1,6 @@
 from structure.ByteStruct import ByteStruct
+
+
 # https://github.com/kwsch/pkNX/blob/master/pkNX.Structures/Text/TextFile.cs
 class TextFile(ByteStruct):
     KEY_BASE = 0x7C89
@@ -50,7 +52,7 @@ class TextFile(ByteStruct):
         for ii in range(self.lineCount()):
             Ofs = self.getuint(ii * 8 + sdo + 4) + sdo
             Len = self.getushort(ii * 8 + sdo + 8)
-            result.append([Ofs,Len])
+            result.append([Ofs, Len])
 
         return result
 
@@ -60,7 +62,9 @@ class TextFile(ByteStruct):
         lines = self.lineOffsets()
 
         for ii in range(self.lineCount()):
-            encryptedLineData = self.data[lines[ii][0] : lines[ii][0] + (2 * lines[ii][1])]
+            encryptedLineData = self.data[
+                lines[ii][0] : lines[ii][0] + (2 * lines[ii][1])
+            ]
             result.append(self.cryptLineData(encryptedLineData, key))
             key += self.KEY_ADVANCE
             key &= 0xFFFF
@@ -82,7 +86,8 @@ class TextFile(ByteStruct):
         ii = 0
 
         while ii < len(data):
-            val = int.from_bytes(data[ii : ii + 2], byteorder="little"); ii += 2
+            val = int.from_bytes(data[ii : ii + 2], byteorder="little")
+            ii += 2
 
             if val == self.KEY_TERMINATOR:
                 return result
@@ -90,24 +95,28 @@ class TextFile(ByteStruct):
                 varstr, ii = self.getVarStr(data, ii)
                 result += varstr
             else:
-                result += str(val.to_bytes(2, byteorder="little"), encoding = "utf-16")
+                result += str(val.to_bytes(2, byteorder="little"), encoding="utf-16")
 
         return result
 
     def getVarStr(self, data, ii):
-        cnt = int.from_bytes(self.data[ii : ii + 2], byteorder="little"); ii += 2
-        var = int.from_bytes(self.data[ii : ii + 2], byteorder="little"); ii += 2
+        cnt = int.from_bytes(self.data[ii : ii + 2], byteorder="little")
+        ii += 2
+        var = int.from_bytes(self.data[ii : ii + 2], byteorder="little")
+        ii += 2
 
         if var == self.KEY_TEXTRETURN:
             return "\r", ii
         elif var == self.KEY_TEXTCLEAR:
             return "[CLEAR]", ii
         elif var == self.KEY_TEXTWAIT:
-            time = int.from_bytes(self.data[ii : ii + 2], byteorder="little"); ii += 2
+            time = int.from_bytes(self.data[ii : ii + 2], byteorder="little")
+            ii += 2
 
             return f"[WAIT {time}]", ii
         elif var == self.KEY_TEXTNULL:
-            line = int.from_bytes(self.data[ii : ii + 2], byteorder="little"); ii += 2
+            line = int.from_bytes(self.data[ii : ii + 2], byteorder="little")
+            ii += 2
 
             return f"[~ {line}]", ii
 
@@ -117,7 +126,8 @@ class TextFile(ByteStruct):
             s += "("
 
             while cnt > 1:
-                arg = int.from_bytes(self.data[ii : ii + 2], byteorder="little"); ii += 2
+                arg = int.from_bytes(self.data[ii : ii + 2], byteorder="little")
+                ii += 2
                 s += f"{arg:X}"
                 cnt -= 1
 

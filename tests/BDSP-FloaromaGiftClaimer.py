@@ -6,10 +6,12 @@ sys.path.append("../")
 from rng import XORSHIFT
 from nxbot import BDSPBot
 
+
 # CTRL+C handler
 def signal_handler(signal, advances):
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -18,22 +20,26 @@ b = BDSPBot(config["IP"])
 
 r = XORSHIFT(b.getSeed())
 seed: list = r.state()
-advances: int = 0
+advances = 0
 print("Initial Seed")
-print(f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}")
+print(
+    f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}"
+)
 print()
 print(f"Advances: {advances}\n\n")
 
 userInput: str = input("Press A at a specific advance? (y/n) ")
 
 if userInput == "y" or userInput == "Y":
-    botFlag: bool = True
+    botFlag = True
     userAdvances: str = input("Input the target advances separated by a space: ")
-    targetAdvances: list = sorted([int(i) for i in userAdvances.split(" ") if i.isdigit()])
+    targetAdvances: list = sorted(
+        [int(i) for i in userAdvances.split(" ") if i.isdigit()]
+    )
 
     # Variables for conversation timeline
-    conversationStarted: bool = False
-    remainder: int = divmod(targetAdvances[0], 41)[1]
+    conversationStarted = False
+    remainder = divmod(targetAdvances[0], 41)[1]
     startConversation: list = [remainder]
 
     # Identify when to begin the conversation, every possible starting point is generated to start talking to NPC as soon
@@ -43,13 +49,13 @@ if userInput == "y" or userInput == "Y":
             startConversation.append(conversationTarget + 41)
 
     # Variable to handle progression of conversation
-    conversationProgressed: bool = False
+    conversationProgressed = False
 
     # Dexscrolling Variables
-    dexOpened: bool = False
-    dexScrolled: bool = False
-    trainercardOpened: bool = False
-    scrolls: int = 0
+    dexOpened = False
+    dexScrolled = False
+    trainercardOpened = False
+    scrolls = 0
 else:
     botFlag = False
 
@@ -64,7 +70,9 @@ while True:
 
         if r.state() == currSeed:
             print("Current Seed")
-            print(f"S[0]: {currSeed[0]:08X}\tS[1]: {currSeed[1]:08X}\nS[2]: {currSeed[2]:08X}\tS[3]: {currSeed[3]:08X}")
+            print(
+                f"S[0]: {currSeed[0]:08X}\tS[1]: {currSeed[1]:08X}\nS[2]: {currSeed[2]:08X}\tS[3]: {currSeed[3]:08X}"
+            )
             print()
             print(f"Advances: {advances}\n\n")
 
@@ -111,7 +119,9 @@ while True:
 
                                     if advances == conversationTarget and advances > 30:
                                         b.click("A")
-                                        print(f"Conversation started on advance {conversationTarget}!\n\n")
+                                        print(
+                                            f"Conversation started on advance {conversationTarget}!\n\n"
+                                        )
                                         conversationStarted = True
 
                                     if advances > conversationTarget:
@@ -129,7 +139,7 @@ while True:
                                 conversationProgressed = True
 
                             # Try to hit target
-                            if  conversationProgressed:
+                            if conversationProgressed:
                                 if len(targetAdvances) > 0:
                                     for currentTarget in targetAdvances:
                                         if advances < currentTarget:

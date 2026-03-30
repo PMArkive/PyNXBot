@@ -1,5 +1,6 @@
 from structure.ByteStruct import ByteStruct
 
+
 class PK8(ByteStruct):
     STOREDSIZE = 0x148
     PARTYSIZE = 0x158
@@ -9,7 +10,7 @@ class PK8(ByteStruct):
         self.data = bytearray(buf[:])
 
         if self.isEncrypted():
-             self.decrypt()
+            self.decrypt()
 
     def ec(self):
         return self.getuint(0x0)
@@ -54,7 +55,14 @@ class PK8(ByteStruct):
         return self.getushort(0x24)
 
     def evs(self):
-        return [self.data[0x26], self.data[0x27], self.data[0x28], self.data[0x2A], self.data[0x2B], self.data[0x29]]
+        return [
+            self.data[0x26],
+            self.data[0x27],
+            self.data[0x28],
+            self.data[0x2A],
+            self.data[0x2B],
+            self.data[0x29],
+        ]
 
     def move1(self):
         return self.getushort(0x72)
@@ -80,8 +88,16 @@ class PK8(ByteStruct):
     def homeTracker(self):
         return self.getulong(0x135)
 
-    def battleStats(self): # Lv,HP,Atk,Def,SpA,SpD,Spe
-        return self.getbyte(0x148), self.getushort(0x14A), self.getushort(0x14C), self.getushort(0x14E), self.getushort(0x152), self.getushort(0x154), self.getushort(0x150)
+    def battleStats(self):  # Lv,HP,Atk,Def,SpA,SpD,Spe
+        return (
+            self.getbyte(0x148),
+            self.getushort(0x14A),
+            self.getushort(0x14C),
+            self.getushort(0x14E),
+            self.getushort(0x152),
+            self.getushort(0x154),
+            self.getushort(0x150),
+        )
 
     def isEgg(self):
         return ((self.iv32() >> 31) & 1) == 1
@@ -89,7 +105,14 @@ class PK8(ByteStruct):
     def ivs(self):
         iv32 = self.iv32()
 
-        return [iv32 & 0x1F, (iv32 >> 5) & 0x1F, (iv32 >> 10) & 0x1F, (iv32 >> 20) & 0x1F, (iv32 >> 25) & 0x1F, (iv32 >> 15) & 0x1F]
+        return [
+            iv32 & 0x1F,
+            (iv32 >> 5) & 0x1F,
+            (iv32 >> 10) & 0x1F,
+            (iv32 >> 20) & 0x1F,
+            (iv32 >> 25) & 0x1F,
+            (iv32 >> 15) & 0x1F,
+        ]
 
     def calChecksum(self):
         chk = 0
@@ -110,10 +133,14 @@ class PK8(ByteStruct):
         return self.getShinyType(self.sidtid(), self.pid())
 
     def shinyString(self):
-        return "None" if self.shinyType() == 0 else "Star" if self.shinyType() == 1 else "Square"
+        return (
+            "None"
+            if self.shinyType() == 0
+            else "Star" if self.shinyType() == 1 else "Square"
+        )
 
     def save(self, filename):
-        with open(f"{filename}.pk8","wb") as fileOut:
+        with open(f"{filename}.pk8", "wb") as fileOut:
             fileOut.write(self.data)
 
     def toString(self):
@@ -169,7 +196,9 @@ class PK8(ByteStruct):
 
         for block in range(4):
             ofs = PK8.BLOCKPOSITION[idx + block]
-            self.data[8 + PK8.BLOCKSIZE * block : 8 + PK8.BLOCKSIZE * (block + 1)] = sdata[8 + PK8.BLOCKSIZE * ofs : 8 + PK8.BLOCKSIZE * (ofs + 1)]
+            self.data[8 + PK8.BLOCKSIZE * block : 8 + PK8.BLOCKSIZE * (block + 1)] = (
+                sdata[8 + PK8.BLOCKSIZE * ofs : 8 + PK8.BLOCKSIZE * (ofs + 1)]
+            )
 
     def refreshChecksum(self):
         self.setushort(0x6, self.calChecksum())

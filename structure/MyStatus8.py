@@ -1,5 +1,6 @@
 from structure.ByteStruct import ByteStruct
 
+
 class MyStatus8(ByteStruct):
     def TID(self):
         return self.getushort(0xA0)
@@ -20,7 +21,17 @@ class MyStatus8(ByteStruct):
         return self.getbyte(0xA7)
 
     def getLangName(self):
-        langNames = {1:'Japanese', 2:'English', 3:'French', 4:'Italian', 5:'German', 7:'Spanish', 8:'Korean', 9:'Simpl. Chinese', 10:'Tradit. Chinese'}
+        langNames = {
+            1: "Japanese",
+            2: "English",
+            3: "French",
+            4: "Italian",
+            5: "German",
+            7: "Spanish",
+            8: "Korean",
+            9: "Simpl. Chinese",
+            10: "Tradit. Chinese",
+        }
         return langNames[self.Language()]
 
     def isSword(self):
@@ -36,13 +47,13 @@ class MyStatus8(ByteStruct):
             return "Shield"
 
     def OT(self):
-        return self.getstring(0xB0,0x1A)
+        return self.getstring(0xB0, 0x1A)
 
     def Watts(self):
-        return self.getCustomInt(0xD0,0x3)
+        return self.getCustomInt(0xD0, 0x3)
 
     def currentWatts(self):
-        return self.getCustomInt(0x0,0x3)
+        return self.getCustomInt(0x0, 0x3)
 
     def Money(self):
-        return self.getCustomInt(0x110,0x3)
+        return self.getCustomInt(0x110, 0x3)

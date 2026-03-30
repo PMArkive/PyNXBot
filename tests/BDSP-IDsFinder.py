@@ -3,13 +3,15 @@ import signal, sys, json
 # Go to root/test of PyNXBot
 sys.path.append("../")
 
-from rng import XORSHIFT,IDs
+from rng import XORSHIFT, IDs
 from nxbot import BDSPBot
+
 
 # CTRL+C handler
 def signal_handler(signal, advances):
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -32,7 +34,9 @@ while True:
     seed = b.getSeed()
     tmpRNG = XORSHIFT(seed)
     print("Initial Seed")
-    print(f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}")
+    print(
+        f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}"
+    )
     print()
     print("Searchig...")
     found = False
@@ -42,7 +46,7 @@ while True:
         r = IDs(tmpRNG.state())
 
         if usefilters:
-            if r.G8TID in G8TIDs: #or r.TID in TIDs or r.SID in SIDs
+            if r.G8TID in G8TIDs:  # or r.TID in TIDs or r.SID in SIDs
                 print(f"\nAdvances: {i}")
                 r.printTrainerInfo()
                 print()

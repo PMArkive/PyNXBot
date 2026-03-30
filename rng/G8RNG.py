@@ -1,11 +1,12 @@
 import z3
 
+
 class XOROSHIRO(object):
-    ulongmask = 2 ** 64 - 1
-    uintmask = 2 ** 32 - 1
+    ulongmask = 2**64 - 1
+    uintmask = 2**32 - 1
 
     def __init__(self, seed, seed2=0x82A2B175229D6A5B):
-            self.seed = [seed, seed2]
+        self.seed = [seed, seed2]
 
     def state(self):
         s0, s1 = self.seed
@@ -19,7 +20,10 @@ class XOROSHIRO(object):
         s0, s1 = self.seed
         result = (s0 + s1) & XOROSHIRO.ulongmask
         s1 ^= s0
-        self.seed = [XOROSHIRO.rotl(s0, 24) ^ s1 ^ ((s1 << 16) & XOROSHIRO.ulongmask), XOROSHIRO.rotl(s1, 37)]
+        self.seed = [
+            XOROSHIRO.rotl(s0, 24) ^ s1 ^ ((s1 << 16) & XOROSHIRO.ulongmask),
+            XOROSHIRO.rotl(s1, 37),
+        ]
 
         return result
 
@@ -44,10 +48,10 @@ class XOROSHIRO(object):
 
         return res
 
-    def quickrand1(self, mask): # 0~mask rand(mask + 1)
+    def quickrand1(self, mask):  # 0~mask rand(mask + 1)
         return self.next() & mask
 
-    def quickrand2(self, max, mask): # 0~max-1 rand(max)
+    def quickrand2(self, max, mask):  # 0~max-1 rand(max)
         res = self.next() & mask
 
         while res >= max:
@@ -78,13 +82,20 @@ class XOROSHIRO(object):
 
         models = get_models(solver)
 
-        return [ model[start_s0].as_long() for model in models ]
+        return [model[start_s0].as_long() for model in models]
+
 
 class FrameGenerator(object):
     def print(self):
         from lookups import Util, GameVersion
-        print(f"Seed: {self.seed:016X}    ShinyType: {self.ShinyType}    EC: {self.EC:08X}    PID: {self.PID:08X}")
-        print(f"Ability: {self.Ability}    Gender: {Util(GameVersion.SWSH).GenderSymbol[self.Gender]}    Nature: {Util(GameVersion.SWSH).STRINGS.natures[self.Nature]}    IVs: {self.IVs}")
+
+        print(
+            f"Seed: {self.seed:016X}    ShinyType: {self.ShinyType}    EC: {self.EC:08X}    PID: {self.PID:08X}"
+        )
+        print(
+            f"Ability: {self.Ability}    Gender: {Util(GameVersion.SWSH).GenderSymbol[self.Gender]}    Nature: {Util(GameVersion.SWSH).STRINGS.natures[self.Nature]}    IVs: {self.IVs}"
+        )
+
 
 class Egg(FrameGenerator):
     EVERSTONE = 229
@@ -118,7 +129,11 @@ class Egg(FrameGenerator):
         self.seed = seed
         r = XOROSHIRO(seed)
 
-        if parent1.gender() == 0 or parent2.gender() == 1 or (parent1.species() == 132 and parent2.gender() != 0):
+        if (
+            parent1.gender() == 0
+            or parent2.gender() == 1
+            or (parent1.species() == 132 and parent2.gender() != 0)
+        ):
             Male = parent1
             Female = parent2
         else:
@@ -127,7 +142,10 @@ class Egg(FrameGenerator):
 
         base = Male if Female.species() == 132 else Female
         from lookups import Util, GameVersion
-        parentpi = Util(GameVersion.SWSH).PT.getFormeEntry(base.species(), base.altForm())
+
+        parentpi = Util(GameVersion.SWSH).PT.getFormeEntry(
+            base.species(), base.altForm()
+        )
         self.species = parentpi.BaseSpecies()
 
         # Gender
@@ -160,7 +178,9 @@ class Egg(FrameGenerator):
 
         # Nature
         self.Nature = r.quickrand2(25, 0x1F)
-        self.BOTH_EVERSTONE = Male.helditem() == Egg.EVERSTONE and Female.helditem() == Egg.EVERSTONE
+        self.BOTH_EVERSTONE = (
+            Male.helditem() == Egg.EVERSTONE and Female.helditem() == Egg.EVERSTONE
+        )
         self.FEMALE_STONE = Female.helditem() == Egg.EVERSTONE
         self.HAS_STONE = Male.helditem() == Egg.EVERSTONE or self.FEMALE_STONE
 
@@ -169,16 +189,25 @@ class Egg(FrameGenerator):
             self.FEMALE_NATURE = Female.nature()
 
             if self.BOTH_EVERSTONE:
-                self.Nature = self.FEMALE_NATURE if r.quickrand1(0x1) else self.MALE_NATURE
-            else :
-                self.Nature = self.FEMALE_NATURE if self.FEMALE_STONE else self.MALE_NATURE
+                self.Nature = (
+                    self.FEMALE_NATURE if r.quickrand1(0x1) else self.MALE_NATURE
+                )
+            else:
+                self.Nature = (
+                    self.FEMALE_NATURE if self.FEMALE_STONE else self.MALE_NATURE
+                )
 
         # Ability
         self.baseAbility = base.abilityNum()
         self.Ability = Egg.getAbilityNum(self.baseAbility, r.quickrand2(100, 0x7F))
 
         # IVs
-        self.InheritIVsCnt = 5 if Male.helditem() == Egg.DESTINYKNOT or Female.helditem() == Egg.DESTINYKNOT else 3
+        self.InheritIVsCnt = (
+            5
+            if Male.helditem() == Egg.DESTINYKNOT
+            or Female.helditem() == Egg.DESTINYKNOT
+            else 3
+        )
 
         ## Power Item
         self.InheritIVs = [-1, -1, -1, -1, -1, -1]
@@ -246,13 +275,13 @@ class Egg(FrameGenerator):
         # Ball
         self.ball = base.ball()
 
-        if Male.species() == Female.species(): # Same dex number
+        if Male.species() == Female.species():  # Same dex number
             self.RandBall = True
             self.BASE_BALL = base.ball()
             self.MALE_BALL = Male.ball()
 
             if r.quickrand2(100, 0x7F) >= 50:
-                self.ball =  self.MALE_BALL
+                self.ball = self.MALE_BALL
 
         if self.ball == 16 or self.ball == 1:
             self.ball = 4
@@ -277,9 +306,13 @@ class Egg(FrameGenerator):
         self.Nature = r.quickrand2(25, 0x1F)
         if self.HAS_STONE:
             if self.BOTH_EVERSTONE:
-                self.Nature = self.FEMALE_NATURE if r.quickrand1(0x1) else self.MALE_NATURE
+                self.Nature = (
+                    self.FEMALE_NATURE if r.quickrand1(0x1) else self.MALE_NATURE
+                )
             else:
-                self.Nature = self.FEMALE_NATURE if self.FEMALE_STONE else self.MALE_NATURE
+                self.Nature = (
+                    self.FEMALE_NATURE if self.FEMALE_STONE else self.MALE_NATURE
+                )
 
         # Ability
         self.Ability = Egg.getAbilityNum(self.baseAbility, r.quickrand2(100, 0x7F))
@@ -328,17 +361,32 @@ class Egg(FrameGenerator):
 
         # Ball
         if self.RandBall:
-            self.ball = self.MALE_BALL if r.quickrand2(100, 0x7F) >= 50 else self.BASE_BALL
+            self.ball = (
+                self.MALE_BALL if r.quickrand2(100, 0x7F) >= 50 else self.BASE_BALL
+            )
 
             if self.ball == 16 or self.ball == 1:
                 self.ball = 4
+
 
 class Raid(FrameGenerator):
     toxtricityAmpedNatures = [3, 4, 2, 8, 9, 19, 22, 11, 13, 14, 0, 6, 24]
     toxtricityLowKeyNatures = [1, 5, 7, 10, 12, 15, 16, 17, 18, 20, 21, 23]
 
-    def __init__(self, seed, TID, SID, flawlessiv, shinyLock=0, ability=4, gender=0, species=25, altform=0):
+    def __init__(
+        self,
+        seed,
+        TID,
+        SID,
+        flawlessiv,
+        shinyLock=0,
+        ability=4,
+        gender=0,
+        species=25,
+        altform=0,
+    ):
         from lookups import Util, GameVersion
+
         pi = Util(GameVersion.SWSH).PT.getFormeEntry(species, altform)
         self.seed = seed
         r = XOROSHIRO(seed)
@@ -349,33 +397,39 @@ class Raid(FrameGenerator):
         PIDShinyType = self.getShinyXor(self.PID) ^ TID ^ SID
         TSV = self.getShinyValue(TID ^ SID)
 
-        if shinyLock == 0: # random shiny chance
+        if shinyLock == 0:  # random shiny chance
             SeedShinyType = self.getShinyType(self.PID, OTID)
             FTSV = self.getShinyValue(OTID)
 
-            if FTSV == PSV: # force shiny
+            if FTSV == PSV:  # force shiny
                 if SeedShinyType == 1:
                     self.ShinyType = "Star"
 
-                    if PSV != TSV or not PIDShinyType: # force to star if PID isn"t shiny/is shiny square
+                    if (
+                        PSV != TSV or not PIDShinyType
+                    ):  # force to star if PID isn"t shiny/is shiny square
                         self.PID = Raid.getFinalPID(self.PID, TID, SID, SeedShinyType)
                 elif SeedShinyType == 2:
                     self.ShinyType = "Square"
 
-                    if PSV != TSV or PIDShinyType: # force to square if PID isn"t shiny/is shiny star
+                    if (
+                        PSV != TSV or PIDShinyType
+                    ):  # force to square if PID isn"t shiny/is shiny star
                         self.PID = Raid.getFinalPID(self.PID, TID, SID, SeedShinyType)
-            else: # force non-shiny
+            else:  # force non-shiny
                 self.ShinyType = "None"
 
                 if PSV == TSV:
                     self.PID ^= 0x10000000
-        elif shinyLock == 1: # forced non-shiny chance
+        elif shinyLock == 1:  # forced non-shiny chance
             self.ShinyType = "None"
 
             if PSV == TSV:
                 self.PID ^= 0x10000000
-        else: # forced shiny chance
-            if PIDShinyType >= 16 or PIDShinyType: # force to square if PID isn"t shiny/is shiny star
+        else:  # forced shiny chance
+            if (
+                PIDShinyType >= 16 or PIDShinyType
+            ):  # force to square if PID isn"t shiny/is shiny star
                 self.PID = Raid.getFinalPID(self.PID, TID, SID, 2)
 
             self.ShinyType = "Square"
@@ -438,10 +492,10 @@ class Raid(FrameGenerator):
         t = Raid.getShinyXor(OTID)
 
         if p == t:
-            return 2 # Square
+            return 2  # Square
 
         if p ^ t < 16:
-            return 1 # Star
+            return 1  # Star
 
         return 0
 
@@ -478,7 +532,7 @@ class Raid(FrameGenerator):
         if len(result) > 0:
             return result
 
-        seedsXor = XOROSHIRO.find_seeds(EC, PID ^ 0x10000000) # Check for shiny lock
+        seedsXor = XOROSHIRO.find_seeds(EC, PID ^ 0x10000000)  # Check for shiny lock
         if len(seedsXor) > 0:
             for iv_count in range(IVs.count(31) + 1):
                 for seed in seeds:
@@ -489,6 +543,7 @@ class Raid(FrameGenerator):
 
         return result
 
+
 def sym_xoroshiro128plus(sym_s0, sym_s1, result):
     sym_r = (sym_s0 + sym_s1) & 0xFFFFFFFFFFFFFFFF
     condition = (sym_r & 0xFFFFFFFF) == result
@@ -496,6 +551,7 @@ def sym_xoroshiro128plus(sym_s0, sym_s1, result):
     sym_s0, sym_s1 = sym_xoroshiro128plusadvance(sym_s0, sym_s1)
 
     return sym_s0, sym_s1, condition
+
 
 def sym_xoroshiro128plusadvance(sym_s0, sym_s1):
     s0 = sym_s0
@@ -506,6 +562,7 @@ def sym_xoroshiro128plusadvance(sym_s0, sym_s1):
     sym_s1 = z3.RotateLeft(s1, 37)
 
     return sym_s0, sym_s1
+
 
 def get_models(s):
     result = []

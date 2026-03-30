@@ -1,5 +1,6 @@
 from structure.ByteStruct import ByteStruct
 
+
 class WC8(ByteStruct):
     SIZE = 0x2D0
     LANG = ["JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"]
@@ -19,7 +20,7 @@ class WC8(ByteStruct):
     def hasOT(self, idx=0):
         return self.ownername(idx) != ""
 
-    def ownername(self,idx):
+    def ownername(self, idx):
         return self.getstring(0x12C + (idx * 0x1C), 0x1A)
 
     def metLocation(self):

@@ -1,6 +1,7 @@
 from structure.ByteStruct import ByteStruct
 from enum import Enum
 
+
 class DenType(Enum):
     EMPTY = 0
     COMMON = 1
@@ -8,6 +9,7 @@ class DenType(Enum):
     COMMON_WISH = 3
     RARE_WISH = 4
     EVENT = 5
+
 
 class Den(ByteStruct):
     SIZE = 0x18
@@ -43,7 +45,9 @@ class Den(ByteStruct):
         return self.denType() == DenType.RARE or self.denType() == DenType.RARE_WISH
 
     def isWishingPiece(self):
-        return self.denType() == DenType.COMMON_WISH or self.denType() == DenType.RARE_WISH
+        return (
+            self.denType() == DenType.COMMON_WISH or self.denType() == DenType.RARE_WISH
+        )
 
     def hasWatts(self):
         return (self.flagByte() & 1) == 0

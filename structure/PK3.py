@@ -1,6 +1,7 @@
 from structure.ByteStruct import ByteStruct
 from lookups import Util, GameVersion
 
+
 class PK3(ByteStruct):
     STOREDSIZE = 0x50
     PARTYSIZE = 0x64
@@ -43,13 +44,22 @@ class PK3(ByteStruct):
             return 1
         elif Util(GameVersion.FRLG).PT.getGen3GenderThreshold(self.species()) == 255:
             return 2
-        elif self.pid() & 255 >= Util(GameVersion.FRLG).PT.getGen3GenderThreshold(self.species()):
+        elif self.pid() & 255 >= Util(GameVersion.FRLG).PT.getGen3GenderThreshold(
+            self.species()
+        ):
             return 0
         else:
             return 1
 
     def evs(self):
-        return [self.data[0x38], self.data[0x39], self.data[0x3A], self.data[0x3C], self.data[0x3D], self.data[0x3B]]
+        return [
+            self.data[0x38],
+            self.data[0x39],
+            self.data[0x3A],
+            self.data[0x3C],
+            self.data[0x3D],
+            self.data[0x3B],
+        ]
 
     def move1(self):
         return self.getushort(0x2C)
@@ -69,21 +79,38 @@ class PK3(ByteStruct):
     def iv32(self):
         return self.getuint(0x48)
 
-    def battleStats(self): # Lv,HP,Atk,Def,SpA,SpD,Spe
-        return self.getbyte(0x54), self.getushort(0x56), self.getushort(0x5A), self.getushort(0x5C), self.getushort(0x60), self.getushort(0x62), self.getushort(0x5E)
+    def battleStats(self):  # Lv,HP,Atk,Def,SpA,SpD,Spe
+        return (
+            self.getbyte(0x54),
+            self.getushort(0x56),
+            self.getushort(0x5A),
+            self.getushort(0x5C),
+            self.getushort(0x60),
+            self.getushort(0x62),
+            self.getushort(0x5E),
+        )
 
     def isEgg(self):
         return ((self.iv32() >> 30) & 1) == 1
 
     def abilityNum(self):
-        return ((self.iv32() >> 31) & 1)
+        return (self.iv32() >> 31) & 1
 
     def ability(self):
-        return Util(GameVersion.FRLG).PT.getGen3Abilities(self.species())[self.abilityNum()]
+        return Util(GameVersion.FRLG).PT.getGen3Abilities(self.species())[
+            self.abilityNum()
+        ]
 
     def ivs(self):
         iv32 = self.iv32()
-        return [iv32 & 0x1F, (iv32 >> 5) & 0x1F, (iv32 >> 10) & 0x1F, (iv32 >> 20) & 0x1F, (iv32 >> 25) & 0x1F, (iv32 >> 15) & 0x1F]
+        return [
+            iv32 & 0x1F,
+            (iv32 >> 5) & 0x1F,
+            (iv32 >> 10) & 0x1F,
+            (iv32 >> 20) & 0x1F,
+            (iv32 >> 25) & 0x1F,
+            (iv32 >> 15) & 0x1F,
+        ]
 
     def calChecksum(self):
         chk = 0
@@ -104,7 +131,11 @@ class PK3(ByteStruct):
         return self.getShinyType(self.sidtid(), self.pid())
 
     def shinyString(self):
-        return "None" if self.shinyType() == 0 else "Star" if self.shinyType() == 1 else "Square"
+        return (
+            "None"
+            if self.shinyType() == 0
+            else "Star" if self.shinyType() == 1 else "Square"
+        )
 
     def save(self, filename):
         with open(f"{filename}.pk3", "wb") as fileOut:
@@ -145,7 +176,7 @@ class PK3(ByteStruct):
 
     def __cryptPKM__(self, seed):
         self.__crypt__(seed, 32, PK3.STOREDSIZE)
- 
+
         if len(self.data) == PK3.PARTYSIZE:
             self.__crypt__(seed, PK3.STOREDSIZE, PK3.PARTYSIZE)
 
@@ -153,7 +184,7 @@ class PK3(ByteStruct):
         i = start
 
         while i < end:
-            self.data[i] ^= (seed & 0xFF)
+            self.data[i] ^= seed & 0xFF
             self.data[i + 1] ^= (seed >> 8) & 0xFF
             self.data[i + 2] ^= (seed >> 16) & 0xFF
             self.data[i + 3] ^= (seed >> 24) & 0xFF
@@ -165,7 +196,9 @@ class PK3(ByteStruct):
 
         for block in range(4):
             ofs = PK3.BLOCKPOSITION[idx + block]
-            self.data[32 + PK3.BLOCKSIZE * block : 32 + PK3.BLOCKSIZE * (block + 1)] = sdata[32 + PK3.BLOCKSIZE * ofs : 32 + PK3.BLOCKSIZE * (ofs + 1)]
+            self.data[32 + PK3.BLOCKSIZE * block : 32 + PK3.BLOCKSIZE * (block + 1)] = (
+                sdata[32 + PK3.BLOCKSIZE * ofs : 32 + PK3.BLOCKSIZE * (ofs + 1)]
+            )
 
     def refreshChecksum(self):
         self.setushort(0x1C, self.calChecksum())

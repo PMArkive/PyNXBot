@@ -7,11 +7,13 @@ sys.path.append("../")
 
 from nxbot import Cram_o_Matic
 
+
 # CTRL+C handler
 def signal_handler(signal, frame):
     print()
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 

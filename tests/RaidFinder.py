@@ -19,13 +19,15 @@ sys.path.append("../")
 
 from lookups import Util, GameVersion
 from nxbot import RaidBot
-from rng import XOROSHIRO,Raid
+from rng import XOROSHIRO, Raid
+
 
 # CTRL+C handler
 def signal_handler(signal, frame):
     print()
     print("Stop request")
     b.closeGame()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -35,7 +37,8 @@ b = RaidBot(config["IP"])
 # Set 0 to disable filter
 usefilters = 1
 
-V6 = [31, 31, 31, 31, 31, 31] #add here the spreads you need
+# Add here the spreads you need
+V6 = [31, 31, 31, 31, 31, 31]
 A0 = [31, 0, 31, 31, 31, 31]
 S0 = [31, 31, 31, 31, 31, 0]
 TRA0 = [31, 0, 31, 31, 31, 0]
@@ -43,7 +46,7 @@ TRA0 = [31, 0, 31, 31, 31, 0]
 altform = 0
 denId = int(input("Den Id: "))
 
-IoA_CT_check = (input("Is your den in the Isle of Armor or in the Crown Tundra? (y/n) "))
+IoA_CT_check = input("Is your den in the Isle of Armor or in the Crown Tundra? (y/n) ")
 
 if IoA_CT_check == "y" or IoA_CT_check == "Y":
     IoA_CT_check = int(input("1 - Isle of Armor / 2 - Crown Tundra? (1/2): "))
@@ -170,11 +173,26 @@ while True:
 
     if do_research:
         while i < MaxFrame:
-            r = Raid(seed, b.TID, b.SID, flawlessiv, shinyLock, ability, gender, species, altform)
+            r = Raid(
+                seed,
+                b.TID,
+                b.SID,
+                flawlessiv,
+                shinyLock,
+                ability,
+                gender,
+                species,
+                altform,
+            )
             seed = XOROSHIRO(seed).next()
 
             if usefilters:
-                if r.ShinyType != "None" and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Adamant" and r.Ability == "H" and r.IVs == V6: #and (r.IVs == V6 or  or r.IVs == S0):
+                if (
+                    r.ShinyType != "None"
+                    and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Adamant"
+                    and r.Ability == "H"
+                    and r.IVs == V6
+                ):  # and (r.IVs == V6 or  or r.IVs == S0):
                     print(f"Frame: {i}")
                     r.print()
                     print()

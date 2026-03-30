@@ -25,7 +25,7 @@ while True:
     if empty:
         print("Box is empty\n")
 
-    stop = input("Continue? (y/n) " )
+    stop = input("Continue? (y/n) ")
 
     if stop != "y" and stop != "Y":
         break

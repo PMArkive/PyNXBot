@@ -6,10 +6,12 @@ sys.path.append("../")
 from rng import XORSHIFT
 from nxbot import BDSPEggBot
 
+
 # CTRL+C handler
 def signal_handler(signal, advances):
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -20,7 +22,9 @@ r = XORSHIFT(b.getSeed())
 seed = r.state()
 advances = 0
 print("Initial Seed")
-print(f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}")
+print(
+    f"S[0]: {seed[0]:08X}\tS[1]: {seed[1]:08X}\nS[2]: {seed[2]:08X}\tS[3]: {seed[3]:08X}"
+)
 print()
 print(f"Advances: {advances}\n")
 
@@ -28,7 +32,9 @@ egg = b.getEggData()
 isEggReady = "Yes" if egg.flag() else "No"
 eggSeed = egg.seed()
 eggSteps = egg.steps()
-print(f"Is egg ready? {isEggReady}\nEgg Seed: {eggSeed:08X}\nSteps for next egg: {180 - eggSteps}\n\n")
+print(
+    f"Is egg ready? {isEggReady}\nEgg Seed: {eggSeed:08X}\nSteps for next egg: {180 - eggSteps}\n\n"
+)
 
 dexOpened = False
 trainercardOpened = False
@@ -57,10 +63,14 @@ while True:
 
         if r.state() == currSeed:
             print("Current Seed")
-            print(f"S[0]: {currSeed[0]:08X}\tS[1]: {currSeed[1]:08X}\nS[2]: {currSeed[2]:08X}\tS[3]: {currSeed[3]:08X}")
+            print(
+                f"S[0]: {currSeed[0]:08X}\tS[1]: {currSeed[1]:08X}\nS[2]: {currSeed[2]:08X}\tS[3]: {currSeed[3]:08X}"
+            )
             print()
             print(f"Advances: {advances}\n")
-            print(f"Is egg ready? {currIsEggReady}\nEgg Seed: {currEggSeed:08X}\nSteps for next egg: {180 - currEggSteps}\n\n")
+            print(
+                f"Is egg ready? {currIsEggReady}\nEgg Seed: {currEggSeed:08X}\nSteps for next egg: {180 - currEggSteps}\n\n"
+            )
 
             if not dexOpened and botFlag and advances <= targetAdvances - 300:
                 print(f"Opening pokedex to advance...\n\n")
@@ -86,7 +96,12 @@ while True:
                 b.pause(0.9)
                 dexOpened = False
 
-            if not trainercardOpened and botFlag and advances >= targetAdvances - 300 and advances <= targetAdvances - 30:
+            if (
+                not trainercardOpened
+                and botFlag
+                and advances >= targetAdvances - 300
+                and advances <= targetAdvances - 30
+            ):
                 print(f"Opening trainercard to advance...\n\n")
                 b.click("X")
                 b.pause(0.9)

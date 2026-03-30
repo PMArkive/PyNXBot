@@ -19,11 +19,13 @@ from structure import PK8
 # Go to root of PyNXBot
 sys.path.append("../")
 
+
 # CTRL+C handler
 def signal_handler(signal, frame):
     print()
     print("Stop request")
     b.close()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -63,7 +65,10 @@ while True:
             b.pause(0.5)
             print(pk8.toString())
 
-            if Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == "Timid" or pk8.shinyString() != "None":
+            if (
+                Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == "Timid"
+                or pk8.shinyString() != "None"
+            ):
                 found = True
 
             break
