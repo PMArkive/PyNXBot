@@ -190,6 +190,7 @@ class NXBot(object):
 
         #self.pause(20.5)
         #currScreen.isIntroAnimationSkippable()
+
         #if luxray:
             #self.pause(1.3)
 

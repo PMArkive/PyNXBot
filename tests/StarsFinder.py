@@ -4,95 +4,111 @@
 #Start the game, save in front of an Den whose beam has been generated through a Wishing Piece and leave the game opened
 #Run the script
 
-import signal
-import sys
-import json 
-sys.path.append('../')
+import signal, sys, json
 
-from lookups import Util
-from structure import Den
+# Go to root of PyNXBot
+sys.path.append("../")
+
+from lookups import Util, GameVersion
 from nxbot import RaidBot
+from structure import Den
 
-def signal_handler(signal, frame): #CTRL+C handler
+# CTRL+C handler
+def signal_handler(signal, frame):
     print("Stop request")
     b.closeGame()
+
+signal.signal(signal.SIGINT, signal_handler)
 
 config = json.load(open("../config.json"))
 b = RaidBot(config["IP"])
 
-signal.signal(signal.SIGINT, signal_handler)
-
 species = input("Which Pokémon are you looking for? (e.g.: Gengar) ")
 altFormFilter = False
 altForm = 0
+
 if species == "Gourgeist":
     altForm = input("Are you looking for a specific size? (y/n) ")
-    if altForm == 'y' or altForm == 'Y':
+
+    if altForm == "y" or altForm == "Y":
         altFormFilter = True
         altForm = int(input("Which size are you looking for?\n0) Avarage / 1) Small / 2) Large / 3) Super: "))
 elif species == "Sinistea" or species == "Polteageist":
     altForm = input("Are you looking for a specific form? (y/n) ")
-    if altForm == 'y' or altForm == 'Y':
+
+    if altForm == "y" or altForm == "Y":
         altFormFilter = True
         altForm = int(input("Which form are you looking for?\n0) Phony / 1) Antique: "))
 
 gigantamax = input("Are you looking for a Gigantamax form? (y/n) ")
-if gigantamax == 'y' or gigantamax == 'Y':
+
+if gigantamax == "y" or gigantamax == "Y":
     gigantamax = True
 else:
     gigantamax = False
 
 shinyLock = input("Is the Pokémon shiny locked? (y/n) ")
-if shinyLock == 'y' or shinyLock == 'Y':
+
+if shinyLock == "y" or shinyLock == "Y":
     shinyLock = 1
 else:
     shinyLock = input("Is the Pokémon forced shiny? (y/n) ")
-    if shinyLock == 'y' or shinyLock == 'Y':
+
+    if shinyLock == "y" or shinyLock == "Y":
         shinyLock = 2
     else:
         shinyLock = 0
 
 starsMin = int(input("Minimum Star Number (1 to 5): "))
-if(starsMin == 5):
+
+if (starsMin == 5):
     starsMax = 5
 else:
     tmp = int(input("Maximum Star Number (min to 5): "))
-    if(tmp <= starsMin):
+
+    if (tmp <= starsMin):
         starsMax = starsMin
     else:
         starsMax = tmp
-        
+
 b.pause(0.5)
 print()
 
 while True:
-    b.click('R') #R on Luxray "+3" button
+    b.click("R") #R on Luxray "+3" button
     b.pause(1.7)
 
     for ii in range(RaidBot.DENCOUNT):
         if ii > 189:
-                den = Den(b.readDen(ii+32))
+            den = Den(b.readDen(ii + 32))
         elif ii > 99:
-                den = Den(b.readDen(ii+11))
+            den = Den(b.readDen(ii + 11))
         else:
-                den = Den(b.readDen(ii))
+            den = Den(b.readDen(ii))
+
         if den.isActive() and den.isWishingPiece():
-            spawn = den.getSpawn(denID = ii, isSword = b.isPlayingSword)
+            spawn = den.getSpawn(denID=ii, isSword=b.isPlayingSword)
+
             if ii > 189:
-                        info = f"[CT] denID: {ii-189}"
+                        info = f"[CT] denID: {ii - 189}"
             elif ii > 99:
-                    info = f"[IoA] denID: {ii-99}"
+                info = f"[IoA] denID: {ii - 99}"
             else:
-                    info = f"denID: {ii+1}"
-            info += f"    {den.stars()}★    Species: {Util.STRINGS.species[spawn.Species()]} "
+                info = f"denID: {ii + 1}"
+
+            info += f"    {den.stars()}★    Species: {Util(GameVersion.SWSH).STRINGS.species[spawn.Species()]} "
+
             if spawn.IsGigantamax():
                 info += "G-Max "
+
             if den.isEvent():
                 if spawn.ShinyFlag() == 1:
-                    info += 'Shiny Locked '
+                    info += "Shiny Locked "
                 elif spawn.ShinyFlag() == 2:
-                    info += '◇ '
+                    info += "◇ "
+
                 info += "   Event"
+
             print(info)
             b.pause(0.5)
             break
@@ -107,12 +123,12 @@ while True:
     else:
         altFormCheck = 1
 
-    if den.stars() >= starsMin and den.stars() <= starsMax and species == Util.STRINGS.species[spawn.Species()] and gigantamax == spawn.IsGigantamax() and shinyLockCheck and altFormCheck:
+    if den.stars() >= starsMin and den.stars() <= starsMax and species == Util(GameVersion.SWSH).STRINGS.species[spawn.Species()] and gigantamax == spawn.IsGigantamax() and shinyLockCheck and altFormCheck:
         b.foundActions()
     else:
-        b.notfoundActions(bot='stars')
+        b.notfoundActions(bot="stars")
 
-    #game resetting
+    # Game resetting
     print("Resetting...")
     b.quitGame()
 
