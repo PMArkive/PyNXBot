@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file "mainwindow.ui"
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -10,11 +10,14 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(380, 210)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
@@ -107,34 +110,39 @@ class Ui_MainWindow(object):
         self.datasize.setText(_translate("MainWindow", "8"))
         # self.B_Settings.setText(_translate("MainWindow", "Settings"))
 
-## Actions
+    ## Actions
     def initializeUI(self):
         self.linkAction()
         self.loadConfig()
         self.refreshSerial()
         self.onConnected(False)
-
         self.connectBot()
+
         if self.B_Connect.isEnabled():
             self.RB_Socket.setChecked(True)
+
         if self.ipaddress.text() != "192.168.0.1":
-            self.connectBot() # Try to connect sys-botbase
+            self.connectBot()  # Try to connect sys-botbase
 
     def loadConfig(self):
         import json
+
         self.config = json.load(open("config.json"))
         self.ipaddress.setText(self.config["IP"])
+
         try:
             self.keytable = self.config["ButtonSettings"]
         except:
             self.keytable = self.defaultkeytable
 
-    def saveConfig(self,key = None, value = None):
+    def saveConfig(self, key=None, value=None):
         import json
-        with open('config.json', 'w') as f:
+
+        with open("config.json", "w") as f:
             if value:
                 self.config[key] = value
-            json.dump(self.config, f, indent = 4)
+
+            json.dump(self.config, f, indent=4)
 
     def linkAction(self):
         self.B_Connect.clicked.connect(self.connectBot)
@@ -146,23 +154,28 @@ class Ui_MainWindow(object):
     def connectBot(self):
         if self.RB_Serial.isChecked():
             from nxbot import ArduinoBot
+
             self.a = ArduinoBot(self.devicelist.currentText())
+
             if self.a.isConnected:
-                self.saveConfig("SerialPort",self.devicelist.currentText())
+                self.saveConfig("SerialPort", self.devicelist.currentText())
                 self.onConnected(True)
         else:
             from nxbot import NXBot
+
             try:
-                if ':' in self.ipaddress.text():
-                    ip, port = self.ipaddress.text().split(':')
+                if ":" in self.ipaddress.text():
+                    ip, port = self.ipaddress.text().split(":")
                 else:
-                    ip, port = self.ipaddress.text(), '6000'
-                self.b = NXBot(ip,int(port))
+                    ip, port = self.ipaddress.text(), "6000"
+
+                self.b = NXBot(ip, int(port))
             except:
                 import sys
-                print("Can't connect to the console:",sys.exc_info()[1])
+
+                print("Can't connect to the console:", sys.exc_info()[1])
             else:
-                self.saveConfig("IP",self.ipaddress.text())
+                self.saveConfig("IP", self.ipaddress.text())
                 self.onConnected(True)
 
     def disconnectBot(self):
@@ -176,19 +189,21 @@ class Ui_MainWindow(object):
         finally:
             self.onConnected(False)
 
-    def onConnected(self,connected):
+    def onConnected(self, connected):
         self.B_Disconnect.setEnabled(connected)
         self.B_Connect.setEnabled(not connected)
         self.devicelist.setEnabled(not connected)
         self.ipaddress.setEnabled(not connected)
         self.RB_Serial.setEnabled(not connected)
         self.RB_Socket.setEnabled(not connected)
+
         if connected and self.RB_Socket.isChecked():
             self.centralwidget.setMaximumHeight(210)
             self.centralwidget.setMinimumHeight(210)
         else:
             self.centralwidget.setMaximumHeight(135)
             self.centralwidget.setMinimumHeight(135)
+
         self.refresh()
 
     def refresh(self):
@@ -200,67 +215,81 @@ class Ui_MainWindow(object):
             last = self.config["SerialPort"]
         except:
             last = ""
+
         self.devicelist.clear()
+
         try:
             from nxbot import ArduinoBot
+
             ports = ArduinoBot.find_port()
+
             import os
+
             for port in ports:
                 self.devicelist.addItem(port)
+
                 if port == last:
                     self.devicelist.setCurrentIndex(self.devicelist.count() - 1)
         except:
             print("No serial devices found")
 
-
-## IO
+    ## IO
     def readRAM(self):
         if self.B_Connect.isEnabled() or self.RB_Serial.isChecked():
             return
+
         dumpfile = QtGui.QGuiApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier
-        buf = self.b.read(int(self.ramaddress.text(),16), int(self.datasize.text()),filename = '' if dumpfile else None)
+        buf = self.b.read(
+            int(self.ramaddress.text(), 16),
+            int(self.datasize.text()),
+            filename="" if dumpfile else None,
+        )
+
         import binascii
+
         self.data.setText(str(binascii.hexlify(buf))[2:-1])
         self.refresh()
 
     def writeRAM(self):
         if self.B_Connect.isEnabled() or self.RB_Serial.isChecked():
             return
-        self.b.write(int(self.ramaddress.text(),16), self.data.text())
 
-## Overload keyPressEvent
+        self.b.write(int(self.ramaddress.text(), 16), self.data.text())
 
-### Button Settings
+    ## Overload keyPressEvent
+
+    ### Button Settings
     from PyQt5.QtCore import Qt
-    defaultkeytable = {
-        'A' : Qt.Key_A,
-        'B' : Qt.Key_S,
-        'X' : Qt.Key_Z,
-        'Y' : Qt.Key_X,
-        'L' : Qt.Key_Q,
-        'R' : Qt.Key_W,
-        'ZL' : Qt.Key_1,
-        'ZR' : Qt.Key_2,
-        'LS' : Qt.Key_3,
-        'RS' : Qt.Key_4,
-        'Home' : Qt.Key_B,
-        'Capture' : Qt.Key_V,
-        'Plus' : Qt.Key_N,
-        'Minus' : Qt.Key_M,
 
-        'D_Left' : Qt.Key_F,
-        'D_Right' : Qt.Key_H,
-        'D_Up' : Qt.Key_T,
-        'D_Down' : Qt.Key_G,
-        'LS_Left' : Qt.Key_Left,
-        'LS_Right' : Qt.Key_Right,
-        'LS_Up' : Qt.Key_Up,
-        'LS_Down' : Qt.Key_Down,
-        'RS_Left' : Qt.Key_J,
-        'RS_Right' : Qt.Key_L,
-        'RS_Up' : Qt.Key_I,
-        'RS_Down' : Qt.Key_K,
+    defaultkeytable = {
+        "A": Qt.Key_A,
+        "B": Qt.Key_S,
+        "X": Qt.Key_Z,
+        "Y": Qt.Key_X,
+        "L": Qt.Key_Q,
+        "R": Qt.Key_W,
+        "ZL": Qt.Key_1,
+        "ZR": Qt.Key_2,
+        "LS": Qt.Key_3,
+        "RS": Qt.Key_4,
+        "Home": Qt.Key_B,
+        "Capture": Qt.Key_V,
+        "Plus": Qt.Key_N,
+        "Minus": Qt.Key_M,
+        "D_Left": Qt.Key_F,
+        "D_Right": Qt.Key_H,
+        "D_Up": Qt.Key_T,
+        "D_Down": Qt.Key_G,
+        "LS_Left": Qt.Key_Left,
+        "LS_Right": Qt.Key_Right,
+        "LS_Up": Qt.Key_Up,
+        "LS_Down": Qt.Key_Down,
+        "RS_Left": Qt.Key_J,
+        "RS_Right": Qt.Key_L,
+        "RS_Up": Qt.Key_I,
+        "RS_Down": Qt.Key_K,
     }
+
 
 class MyMainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -269,223 +298,239 @@ class MyMainWindow(QtWidgets.QMainWindow):
         self.parentui.setupUi(self)
         self.parentui.initializeUI()
 
-    def keyPressEvent(self,event):
+    def keyPressEvent(self, event):
         ui = self.parentui
-        if ui.B_Connect.isEnabled():
-            return
-        if event.isAutoRepeat():
-            return
-        key = event.key()
-        if ui.RB_Serial.isChecked():
-            if key == ui.keytable['A']:
-                ui.a.A(-1)
-            elif key == ui.keytable['B']:
-                ui.a.B(-1)
-            elif key == ui.keytable['X']:
-                ui.a.X(-1)
-            elif key == ui.keytable['Y']:
-                ui.a.Y(-1)
-            elif key == ui.keytable['LS_Up']:
-                ui.a.ls_u(-1)
-            elif key == ui.keytable['LS_Down']:
-                ui.a.ls_d(-1)
-            elif key == ui.keytable['LS_Left']:
-                ui.a.ls_l(-1)
-            elif key == ui.keytable['LS_Right']:
-                ui.a.ls_r(-1)
-            elif key == ui.keytable['RS_Up']:
-                ui.a.rs_u(-1)
-            elif key == ui.keytable['RS_Down']:
-                ui.a.rs_d(-1)
-            elif key == ui.keytable['RS_Left']:
-                ui.a.rs_l(-1)
-            elif key == ui.keytable['RS_Right']:
-                ui.a.rs_r(-1)
-            elif key == ui.keytable['D_Up']:
-                ui.a.u(-1)
-            elif key == ui.keytable['D_Down']:
-                ui.a.d(-1)
-            elif key == ui.keytable['D_Left']:
-                ui.a.l(-1)
-            elif key == ui.keytable['D_Right']:
-                ui.a.r(-1)
-            elif key == ui.keytable['Home']:
-                ui.a.h()
-            elif key == ui.keytable['Capture']:
-                ui.a.c(-1)
-            elif key == ui.keytable['Plus']:
-                ui.a.p(-1)
-            elif key == ui.keytable['Minus']:
-                ui.a.m(-1)
-            elif key == ui.keytable['L']:
-                ui.a.L(-1)
-            elif key == ui.keytable['R']:
-                ui.a.R(-1)
-            elif key == ui.keytable['ZL']:
-                ui.a.ZL(-1)
-            elif key == ui.keytable['ZR']:
-                ui.a.ZR(-1)
-            elif key == ui.keytable['LS']:
-                ui.a.LS(-1)
-            elif key == ui.keytable['RS']:
-                ui.a.RS(-1)
-        else:
-            if key == ui.keytable['A']:
-                ui.b.press("A")
-            elif key == ui.keytable['B']:
-                ui.b.press("B")
-            elif key == ui.keytable['X']:
-                ui.b.press("X")
-            elif key == ui.keytable['Y']:
-                ui.b.press("Y")
-            elif key == ui.keytable['D_Up']:
-                ui.b.press("DUP")
-            elif key == ui.keytable['D_Down']:
-                ui.b.press("DDOWN")
-            elif key == ui.keytable['D_Left']:
-                ui.b.press("DLEFT")
-            elif key == ui.keytable['D_Right']:
-                ui.b.press("DRIGHT")
-            elif key == ui.keytable['Home']:
-                ui.b.press("HOME")
-            elif key == ui.keytable['Capture']:
-                ui.b.press("CAPTURE")
-            elif key == ui.keytable['Plus']:
-                ui.b.press("PLUS")
-            elif key == ui.keytable['Minus']:
-                ui.b.press("MINUS")
-            elif key == ui.keytable['L']:
-                ui.b.press("L")
-            elif key == ui.keytable['R']:
-                ui.b.press("R")
-            elif key == ui.keytable['ZL']:
-                ui.b.press("ZL")
-            elif key == ui.keytable['ZR']:
-                ui.b.press("ZR")
-            elif key == ui.keytable['LS']:
-                ui.b.press("LSTICK")
-            elif key == ui.keytable['RS']:
-                ui.b.press("RSTICK")
-            elif key == ui.keytable['LS_Up']:
-                ui.b.moveLeftStick(y = 0x7FFF)
-            elif key == ui.keytable['LS_Down']:
-                ui.b.moveLeftStick(y = -0x8000)
-            elif key == ui.keytable['LS_Left']:
-                ui.b.moveLeftStick(x = -0x8000)
-            elif key == ui.keytable['LS_Right']:
-                ui.b.moveLeftStick(x = 0x7FFF)
-            elif key == ui.keytable['RS_Up']:
-                ui.b.moveRightStick(y = 0x7FFF)
-            elif key == ui.keytable['RS_Down']:
-                ui.b.moveRightStick(y = -0x8000)
-            elif key == ui.keytable['RS_Left']:
-                ui.b.moveRightStick(x = -0x8000)
-            elif key == ui.keytable['RS_Right']:
-                ui.b.moveRightStick(x = 0x7FFF)
 
-    def keyReleaseEvent(self,event):
-        ui = self.parentui
         if ui.B_Connect.isEnabled():
             return
+
         if event.isAutoRepeat():
             return
+
         key = event.key()
+
         if ui.RB_Serial.isChecked():
-            if key == ui.keytable['A']:
+            if key == ui.keytable["A"]:
                 ui.a.A(-1)
-            elif key == ui.keytable['B']:
+            elif key == ui.keytable["B"]:
                 ui.a.B(-1)
-            elif key == ui.keytable['X']:
+            elif key == ui.keytable["X"]:
                 ui.a.X(-1)
-            elif key == ui.keytable['Y']:
+            elif key == ui.keytable["Y"]:
                 ui.a.Y(-1)
-            elif key == ui.keytable['LS_Up'] or key == ui.keytable['LS_Down']:
-                ui.a.ls_yc()
-            elif key == ui.keytable['LS_Left'] or key == ui.keytable['LS_Right']:
-                ui.a.ls_xc()
-            elif key == ui.keytable['RS_Up'] or key == ui.keytable['RS_Down']:
-                ui.a.rs_yc()
-            elif key == ui.keytable['RS_Left'] or key == ui.keytable['RS_Right']:
-                ui.a.rs_xc()
-            elif key in { ui.keytable['D_Up'], ui.keytable['D_Down'], ui.keytable['D_Left'], ui.keytable['D_Right'] }:
-                ui.a.d_c()
-            elif key == ui.keytable['Home']:
+            elif key == ui.keytable["LS_Up"]:
+                ui.a.ls_u(-1)
+            elif key == ui.keytable["LS_Down"]:
+                ui.a.ls_d(-1)
+            elif key == ui.keytable["LS_Left"]:
+                ui.a.ls_l(-1)
+            elif key == ui.keytable["LS_Right"]:
+                ui.a.ls_r(-1)
+            elif key == ui.keytable["RS_Up"]:
+                ui.a.rs_u(-1)
+            elif key == ui.keytable["RS_Down"]:
+                ui.a.rs_d(-1)
+            elif key == ui.keytable["RS_Left"]:
+                ui.a.rs_l(-1)
+            elif key == ui.keytable["RS_Right"]:
+                ui.a.rs_r(-1)
+            elif key == ui.keytable["D_Up"]:
+                ui.a.u(-1)
+            elif key == ui.keytable["D_Down"]:
+                ui.a.d(-1)
+            elif key == ui.keytable["D_Left"]:
+                ui.a.l(-1)
+            elif key == ui.keytable["D_Right"]:
+                ui.a.r(-1)
+            elif key == ui.keytable["Home"]:
                 ui.a.h()
-            elif key == ui.keytable['Capture']:
+            elif key == ui.keytable["Capture"]:
                 ui.a.c(-1)
-            elif key == ui.keytable['Plus']:
+            elif key == ui.keytable["Plus"]:
                 ui.a.p(-1)
-            elif key == ui.keytable['Minus']:
+            elif key == ui.keytable["Minus"]:
                 ui.a.m(-1)
-            elif key == ui.keytable['L']:
+            elif key == ui.keytable["L"]:
                 ui.a.L(-1)
-            elif key == ui.keytable['R']:
+            elif key == ui.keytable["R"]:
                 ui.a.R(-1)
-            elif key == ui.keytable['ZL']:
+            elif key == ui.keytable["ZL"]:
                 ui.a.ZL(-1)
-            elif key == ui.keytable['ZR']:
+            elif key == ui.keytable["ZR"]:
                 ui.a.ZR(-1)
-            elif key == ui.keytable['LS']:
+            elif key == ui.keytable["LS"]:
                 ui.a.LS(-1)
-            elif key == ui.keytable['RS']:
+            elif key == ui.keytable["RS"]:
                 ui.a.RS(-1)
         else:
-            if key == ui.keytable['A']:
-                ui.b.release("A")
-            elif key == ui.keytable['B']:
-                ui.b.release("B")
-            elif key == ui.keytable['X']:
-                ui.b.release("X")
-            elif key == ui.keytable['Y']:
-                ui.b.release("Y")
-            elif key == ui.keytable['D_Up']:
-                ui.b.release("DUP")
-            elif key == ui.keytable['D_Down']:
-                ui.b.release("DDOWN")
-            elif key == ui.keytable['D_Left']:
-                ui.b.release("DLEFT")
-            elif key == ui.keytable['D_Right']:
-                ui.b.release("DRIGHT")
-            elif key == ui.keytable['Home']:
-                ui.b.release("HOME")
-            elif key == ui.keytable['Capture']:
-                ui.b.release("CAPTURE")
-            elif key == ui.keytable['Plus']:
-                ui.b.release("PLUS")
-            elif key == ui.keytable['Minus']:
-                ui.b.release("MINUS")
-            elif key == ui.keytable['L']:
-                ui.b.release("L")
-            elif key == ui.keytable['R']:
-                ui.b.release("R")
-            elif key == ui.keytable['ZL']:
+            if key == ui.keytable["A"]:
+                ui.b.press("A")
+            elif key == ui.keytable["B"]:
+                ui.b.press("B")
+            elif key == ui.keytable["X"]:
+                ui.b.press("X")
+            elif key == ui.keytable["Y"]:
+                ui.b.press("Y")
+            elif key == ui.keytable["D_Up"]:
+                ui.b.press("DUP")
+            elif key == ui.keytable["D_Down"]:
+                ui.b.press("DDOWN")
+            elif key == ui.keytable["D_Left"]:
+                ui.b.press("DLEFT")
+            elif key == ui.keytable["D_Right"]:
+                ui.b.press("DRIGHT")
+            elif key == ui.keytable["Home"]:
+                ui.b.press("HOME")
+            elif key == ui.keytable["Capture"]:
+                ui.b.press("CAPTURE")
+            elif key == ui.keytable["Plus"]:
+                ui.b.press("PLUS")
+            elif key == ui.keytable["Minus"]:
+                ui.b.press("MINUS")
+            elif key == ui.keytable["L"]:
+                ui.b.press("L")
+            elif key == ui.keytable["R"]:
+                ui.b.press("R")
+            elif key == ui.keytable["ZL"]:
                 ui.b.press("ZL")
-            elif key == ui.keytable['ZR']:
+            elif key == ui.keytable["ZR"]:
                 ui.b.press("ZR")
-            elif key == ui.keytable['LS']:
+            elif key == ui.keytable["LS"]:
                 ui.b.press("LSTICK")
-            elif key == ui.keytable['RS']:
+            elif key == ui.keytable["RS"]:
                 ui.b.press("RSTICK")
-            elif key == ui.keytable['LS_Up']:
-                ui.b.moveLeftStick(y = 0)
-            elif key == ui.keytable['LS_Down']:
-                ui.b.moveLeftStick(y = 0)
-            elif key == ui.keytable['LS_Left']:
-                ui.b.moveLeftStick(x = 0)
-            elif key == ui.keytable['LS_Right']:
-                ui.b.moveLeftStick(x = 0)
-            elif key == ui.keytable['RS_Up']:
-                ui.b.moveRightStick(y = 0)
-            elif key == ui.keytable['RS_Down']:
-                ui.b.moveRightStick(y = 0)
-            elif key == ui.keytable['RS_Left']:
-                ui.b.moveRightStick(x = 0)
-            elif key == ui.keytable['RS_Right']:
-                ui.b.moveRightStick(x = 0)
+            elif key == ui.keytable["LS_Up"]:
+                ui.b.moveLeftStick(y=0x7FFF)
+            elif key == ui.keytable["LS_Down"]:
+                ui.b.moveLeftStick(y=-0x8000)
+            elif key == ui.keytable["LS_Left"]:
+                ui.b.moveLeftStick(x=-0x8000)
+            elif key == ui.keytable["LS_Right"]:
+                ui.b.moveLeftStick(x=0x7FFF)
+            elif key == ui.keytable["RS_Up"]:
+                ui.b.moveRightStick(y=0x7FFF)
+            elif key == ui.keytable["RS_Down"]:
+                ui.b.moveRightStick(y=-0x8000)
+            elif key == ui.keytable["RS_Left"]:
+                ui.b.moveRightStick(x=-0x8000)
+            elif key == ui.keytable["RS_Right"]:
+                ui.b.moveRightStick(x=0x7FFF)
+
+    def keyReleaseEvent(self, event):
+        ui = self.parentui
+
+        if ui.B_Connect.isEnabled():
+            return
+
+        if event.isAutoRepeat():
+            return
+
+        key = event.key()
+
+        if ui.RB_Serial.isChecked():
+            if key == ui.keytable["A"]:
+                ui.a.A(-1)
+            elif key == ui.keytable["B"]:
+                ui.a.B(-1)
+            elif key == ui.keytable["X"]:
+                ui.a.X(-1)
+            elif key == ui.keytable["Y"]:
+                ui.a.Y(-1)
+            elif key == ui.keytable["LS_Up"] or key == ui.keytable["LS_Down"]:
+                ui.a.ls_yc()
+            elif key == ui.keytable["LS_Left"] or key == ui.keytable["LS_Right"]:
+                ui.a.ls_xc()
+            elif key == ui.keytable["RS_Up"] or key == ui.keytable["RS_Down"]:
+                ui.a.rs_yc()
+            elif key == ui.keytable["RS_Left"] or key == ui.keytable["RS_Right"]:
+                ui.a.rs_xc()
+            elif key in {
+                ui.keytable["D_Up"],
+                ui.keytable["D_Down"],
+                ui.keytable["D_Left"],
+                ui.keytable["D_Right"],
+            }:
+                ui.a.d_c()
+            elif key == ui.keytable["Home"]:
+                ui.a.h()
+            elif key == ui.keytable["Capture"]:
+                ui.a.c(-1)
+            elif key == ui.keytable["Plus"]:
+                ui.a.p(-1)
+            elif key == ui.keytable["Minus"]:
+                ui.a.m(-1)
+            elif key == ui.keytable["L"]:
+                ui.a.L(-1)
+            elif key == ui.keytable["R"]:
+                ui.a.R(-1)
+            elif key == ui.keytable["ZL"]:
+                ui.a.ZL(-1)
+            elif key == ui.keytable["ZR"]:
+                ui.a.ZR(-1)
+            elif key == ui.keytable["LS"]:
+                ui.a.LS(-1)
+            elif key == ui.keytable["RS"]:
+                ui.a.RS(-1)
+        else:
+            if key == ui.keytable["A"]:
+                ui.b.release("A")
+            elif key == ui.keytable["B"]:
+                ui.b.release("B")
+            elif key == ui.keytable["X"]:
+                ui.b.release("X")
+            elif key == ui.keytable["Y"]:
+                ui.b.release("Y")
+            elif key == ui.keytable["D_Up"]:
+                ui.b.release("DUP")
+            elif key == ui.keytable["D_Down"]:
+                ui.b.release("DDOWN")
+            elif key == ui.keytable["D_Left"]:
+                ui.b.release("DLEFT")
+            elif key == ui.keytable["D_Right"]:
+                ui.b.release("DRIGHT")
+            elif key == ui.keytable["Home"]:
+                ui.b.release("HOME")
+            elif key == ui.keytable["Capture"]:
+                ui.b.release("CAPTURE")
+            elif key == ui.keytable["Plus"]:
+                ui.b.release("PLUS")
+            elif key == ui.keytable["Minus"]:
+                ui.b.release("MINUS")
+            elif key == ui.keytable["L"]:
+                ui.b.release("L")
+            elif key == ui.keytable["R"]:
+                ui.b.release("R")
+            elif key == ui.keytable["ZL"]:
+                ui.b.press("ZL")
+            elif key == ui.keytable["ZR"]:
+                ui.b.press("ZR")
+            elif key == ui.keytable["LS"]:
+                ui.b.press("LSTICK")
+            elif key == ui.keytable["RS"]:
+                ui.b.press("RSTICK")
+            elif key == ui.keytable["LS_Up"]:
+                ui.b.moveLeftStick(y=0)
+            elif key == ui.keytable["LS_Down"]:
+                ui.b.moveLeftStick(y=0)
+            elif key == ui.keytable["LS_Left"]:
+                ui.b.moveLeftStick(x=0)
+            elif key == ui.keytable["LS_Right"]:
+                ui.b.moveLeftStick(x=0)
+            elif key == ui.keytable["RS_Up"]:
+                ui.b.moveRightStick(y=0)
+            elif key == ui.keytable["RS_Down"]:
+                ui.b.moveRightStick(y=0)
+            elif key == ui.keytable["RS_Left"]:
+                ui.b.moveRightStick(x=0)
+            elif key == ui.keytable["RS_Right"]:
+                ui.b.moveRightStick(x=0)
+
+
 ## endof actions
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = MyMainWindow()
     MainWindow.show()
