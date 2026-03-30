@@ -45,11 +45,11 @@ Use [CaptureSight](https://github.com/zaksabeast/CaptureSight)/CheckDen script t
 6) Modify research filters inside the script according to what is written below
 7) Run the script
 
-* Util.STRINGS.natures[r.Nature] == 'Nature' (i.e. Util.STRINGS.natures[r.Nature] == 'Timid')
+* Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Nature' (i.e. Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Timid')
 * r.Ability == 1/2/'H'
 * r.ShinyType == 'None'/'Star'/'Square' (!= 'None' for both Square/Star shiny type)
 * r.IVs == spread_name (spread_name = [x,x,x,x,x,x])
-* Util.GenderSymbol[r.Gender] == '♂'/'♀'/'-'
+* Util(GameVersion.SWSH).GenderSymbol[r.Gender] == '♂'/'♀'/'-'
 
 ### Stars Finder:
 1) Connect your Switch to Internet
@@ -67,10 +67,10 @@ Use [CaptureSight](https://github.com/zaksabeast/CaptureSight)/CheckDen script t
 6) Run the script
 
 * pk8.getAbilityString() == 1/2/'H'
-* Util.STRINGS.natures[pk8.nature()] == 'Nature'
+* Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == 'Nature'
 * pk8.shinyString() == 'None'/'Star'/'Square' (!= 'None' for both star/square)
 * pk8.IVs == spread_name (spread_name = [x,x,x,x,x,x])
-* Util.GenderSymbol[pk8.gender()] == '♂'/'♀'/'-'
+* Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == '♂'/'♀'/'-'
 
 ### GUI in Python: NXController
 
@@ -99,4 +99,3 @@ So, everytime you want to stop the bot, always press CTRL+C and follow the instr
 * [Leanny](https://github.com/Leanny) for the great [PKHeX_Raid_Plugin](https://github.com/Leanny/PKHeX_Raid_Plugin/tree/master/PKHeX_Raid_Plugin) (many addresses/checks are taken from there)
 * [kwsch](https://github.com/kwsch) for the great [SysBot.NET](https://github.com/kwsch/SysBot.NET) (many addresses/checks are taken from there)
 * [Lusamine](https://github.com/Lusamine) for [SySBot.NET fork](https://github.com/Lusamine/SysBot.NET/tree/moarencounterbots) (FRLG addresses are taken from there)
-* [Real96](https://github.com/Real96) for working on the various bots
