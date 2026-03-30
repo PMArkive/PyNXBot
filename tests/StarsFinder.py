@@ -75,7 +75,8 @@ b.pause(0.5)
 print()
 
 while True:
-    b.click("R") #R on Luxray "+3" button
+    # R on Luxray "+3" button
+    b.click("R")
     b.pause(1.7)
 
     for ii in range(RaidBot.DENCOUNT):
@@ -90,7 +91,7 @@ while True:
             spawn = den.getSpawn(denID=ii, isSword=b.isPlayingSword)
 
             if ii > 189:
-                        info = f"[CT] denID: {ii - 189}"
+                info = f"[CT] denID: {ii - 189}"
             elif ii > 99:
                 info = f"[IoA] denID: {ii - 99}"
             else:
