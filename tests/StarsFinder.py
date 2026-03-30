@@ -13,10 +13,12 @@ from lookups import Util, GameVersion
 from nxbot import RaidBot
 from structure import Den
 
+
 # CTRL+C handler
 def signal_handler(signal, frame):
     print("Stop request")
     b.closeGame()
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -32,7 +34,11 @@ if species == "Gourgeist":
 
     if altForm == "y" or altForm == "Y":
         altFormFilter = True
-        altForm = int(input("Which size are you looking for?\n0) Avarage / 1) Small / 2) Large / 3) Super: "))
+        altForm = int(
+            input(
+                "Which size are you looking for?\n0) Avarage / 1) Small / 2) Large / 3) Super: "
+            )
+        )
 elif species == "Sinistea" or species == "Polteageist":
     altForm = input("Are you looking for a specific form? (y/n) ")
 
@@ -61,12 +67,12 @@ else:
 
 starsMin = int(input("Minimum Star Number (1 to 5): "))
 
-if (starsMin == 5):
+if starsMin == 5:
     starsMax = 5
 else:
     tmp = int(input("Maximum Star Number (min to 5): "))
 
-    if (tmp <= starsMin):
+    if tmp <= starsMin:
         starsMax = starsMin
     else:
         starsMax = tmp
@@ -124,7 +130,14 @@ while True:
     else:
         altFormCheck = 1
 
-    if den.stars() >= starsMin and den.stars() <= starsMax and species == Util(GameVersion.SWSH).STRINGS.species[spawn.Species()] and gigantamax == spawn.IsGigantamax() and shinyLockCheck and altFormCheck:
+    if (
+        den.stars() >= starsMin
+        and den.stars() <= starsMax
+        and species == Util(GameVersion.SWSH).STRINGS.species[spawn.Species()]
+        and gigantamax == spawn.IsGigantamax()
+        and shinyLockCheck
+        and altFormCheck
+    ):
         b.foundActions()
     else:
         b.notfoundActions(bot="stars")
@@ -134,4 +147,4 @@ while True:
     b.quitGame()
 
     b.enterGame()
-    b.skipIntroAnimation() #luxray=True
+    b.skipIntroAnimation()  # luxray=True
