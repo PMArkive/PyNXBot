@@ -39,38 +39,38 @@ Use [CaptureSight](https://github.com/zaksabeast/CaptureSight)/CheckDen script t
 ### Raid Finder:
 1) Connect your Switch to Internet
 2) Start sys-botbase and ldn_mitm
-3) Go to System Settings, check your Switch IP and write it inside the "config.json" file
+3) Go to System Settings, check your Switch IP and write it inside the `config.json` file
 4) Start the game and set game text speed to normal
 5) Save in front of an empty Den and leave the game opened. You must have at least one Wishing Piece in your bag
 6) Modify research filters inside the script according to what is written below
 7) Run the script
 
-* `Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Nature' (i.e. Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Timid')`
-* `r.Ability == 1/2/'H'`
-* `r.ShinyType == 'None'/'Star'/'Square' (!= 'None' for both Square/Star shiny type)`
+* `Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "<Nature>" (i.e. Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Timid")`
+* `r.Ability == 1/2/"H"`
+* `r.ShinyType == "None"/"Star"/"Square" (!= "None" for both Square/Star shiny type)`
 * `r.IVs == spread_name (spread_name = [x,x,x,x,x,x])`
-* `Util(GameVersion.SWSH).GenderSymbol[r.Gender] == '♂'/'♀'/'-'`
+* `Util(GameVersion.SWSH).GenderSymbol[r.Gender] == "♂"/"♀"/"-"`
 
 ### Stars Finder:
 1) Connect your Switch to Internet
-2) Start sys-botbase, ldn_mitm and luxray (the yellow cursor of luxray has to be over "+3" button)
-3) Go to System Settings, check your Switch IP and write it inside "config.json" file
+2) Start sys-botbase, ldn_mitm and luxray (the yellow cursor of luxray has to be over `+3` button)
+3) Go to System Settings, check your Switch IP and write it inside `config.json` file
 4) Start the game, save in front of an Den whose beam has been generated through a Wishing Piece and leave the game opened
 5) Run the script
 
 ### Stationary Finder:
 1) Connect your Switch to Interet
 2) Start sys-botbase and ldn_mitm
-3) Go to System Settings, check your Switch IP and write it inside the "config.json" file
+3) Go to System Settings, check your Switch IP and write it inside the `config.json` file
 4) Save in front of a stationary and leave the game opened
 5) Modify research filters inside the script according to what is written below
 6) Run the script
 
-* `pk8.getAbilityString() == 1/2/'H'`
-* `Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == 'Nature'`
-* `pk8.shinyString() == 'None'/'Star'/'Square' (!= 'None' for both star/square)`
+* `pk8.getAbilityString() == 1/2/"H"`
+* `Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == "<Nature>"`
+* `pk8.shinyString() == "None"/"Star"/"Square" (!= "None" for both star/square)`
 * `pk8.IVs == spread_name (spread_name = [x,x,x,x,x,x])`
-* `Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == '♂'/'♀'/'-'`
+* `Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == "♂"/"♀"/"-"`
 
 ### GUI in Python: NXController
 
