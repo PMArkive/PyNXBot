@@ -45,11 +45,11 @@ Use [CaptureSight](https://github.com/zaksabeast/CaptureSight)/CheckDen script t
 6) Modify research filters inside the script according to what is written below
 7) Run the script
 
-* Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Nature' (i.e. Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Timid')
-* r.Ability == 1/2/'H'
-* r.ShinyType == 'None'/'Star'/'Square' (!= 'None' for both Square/Star shiny type)
-* r.IVs == spread_name (spread_name = [x,x,x,x,x,x])
-* Util(GameVersion.SWSH).GenderSymbol[r.Gender] == '♂'/'♀'/'-'
+* `Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Nature' (i.e. Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == 'Timid')`
+* `r.Ability == 1/2/'H'`
+* `r.ShinyType == 'None'/'Star'/'Square' (!= 'None' for both Square/Star shiny type)`
+* `r.IVs == spread_name (spread_name = [x,x,x,x,x,x])`
+* `Util(GameVersion.SWSH).GenderSymbol[r.Gender] == '♂'/'♀'/'-'`
 
 ### Stars Finder:
 1) Connect your Switch to Internet
@@ -66,11 +66,11 @@ Use [CaptureSight](https://github.com/zaksabeast/CaptureSight)/CheckDen script t
 5) Modify research filters inside the script according to what is written below
 6) Run the script
 
-* pk8.getAbilityString() == 1/2/'H'
-* Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == 'Nature'
-* pk8.shinyString() == 'None'/'Star'/'Square' (!= 'None' for both star/square)
-* pk8.IVs == spread_name (spread_name = [x,x,x,x,x,x])
-* Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == '♂'/'♀'/'-'
+* `pk8.getAbilityString() == 1/2/'H'`
+* `Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == 'Nature'`
+* `pk8.shinyString() == 'None'/'Star'/'Square' (!= 'None' for both star/square)`
+* `pk8.IVs == spread_name (spread_name = [x,x,x,x,x,x])`
+* `Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == '♂'/'♀'/'-'`
 
 ### GUI in Python: NXController
 
