@@ -117,18 +117,18 @@ class PK8(ByteStruct):
             fileOut.write(self.data)
 
     def toString(self):
-        from lookups import Util
+        from lookups import Util, GameVersion
 
         if self.isValid():
             shinytype = self.shinyType()
             shinyflag = "" if shinytype == 0 else "⋆  " if shinytype == 1 else "◇  "
             msg = f"EC: {self.ec():X}  PID: {self.pid():X}  " + shinyflag
-            msg += f"{"G-" if self.canGigantamax() else ""}{Util.STRINGS.species[self.species()]}{("-" + str(self.altForm())) if self.altForm() > 0 else ""}\n"
-            msg += f"Nature: {Util.STRINGS.natures[self.nature()]} ({Util.STRINGS.natures[self.statnature()]})  "
-            msg += f"Ability: {Util.STRINGS.abilities[self.ability()]} ({self.getAbilityString()})  "
-            msg += f"Gender: {Util.GenderSymbol[self.gender()]}\n"
+            msg += f"{"G-" if self.canGigantamax() else ""}{Util(GameVersion.SWSH).STRINGS.species[self.species()]}{("-" + str(self.altForm())) if self.altForm() > 0 else ""}\n"
+            msg += f"Nature: {Util(GameVersion.SWSH).STRINGS.natures[self.nature()]} ({Util(GameVersion.SWSH).STRINGS.natures[self.statnature()]})  "
+            msg += f"Ability: {Util(GameVersion.SWSH).STRINGS.abilities[self.ability()]} ({self.getAbilityString()})  "
+            msg += f"Gender: {Util(GameVersion.SWSH).GenderSymbol[self.gender()]}\n"
             msg += f"IVs: {self.ivs()}  EVs: {self.evs()}\n"
-            msg += f"Moves: {Util.STRINGS.moves[self.move1()]} / {Util.STRINGS.moves[self.move2()]} / {Util.STRINGS.moves[self.move3()]} / {Util.STRINGS.moves[self.move4()]}\n"
+            msg += f"Moves: {Util(GameVersion.SWSH).STRINGS.moves[self.move1()]} / {Util(GameVersion.SWSH).STRINGS.moves[self.move2()]} / {Util(GameVersion.SWSH).STRINGS.moves[self.move3()]} / {Util(GameVersion.SWSH).STRINGS.moves[self.move4()]}\n"
 
             return msg
         else:

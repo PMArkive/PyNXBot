@@ -3,7 +3,7 @@ import signal, sys, json
 # Go to root of PyNXBot
 sys.path.append("../")
 
-from lookups import Util
+from lookups import Util, GameVersion
 from nxbot import RaidBot
 from rng import XOROSHIRO,Raid
 from structure import Den
@@ -46,7 +46,7 @@ for ii in range(RaidBot.DENCOUNT):
         else:
             info = f"denID: {ii+1}"
 
-        info += f"    {den.stars()}★    Species: {Util.STRINGS.species[spawn.Species()]}"
+        info += f"    {den.stars()}★    Species: {Util(GameVersion.SWSH).STRINGS.species[spawn.Species()]}"
 
         if spawn.IsGigantamax():
             info += " G-Max"
@@ -81,7 +81,7 @@ if seed is not None and doResearch:
         seed = XOROSHIRO(seed).next()
 
         if useFilters:
-            if (r.ShinyType != "None" or r.IVs == V6 or r.IVs == S0 or r.IVs == A0) and Util.STRINGS.natures[r.Nature] == "Careful":
+            if (r.ShinyType != "None" or r.IVs == V6 or r.IVs == S0 or r.IVs == A0) and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Careful":
                 print(f"Frame:{i}")
                 r.print()
                 print()

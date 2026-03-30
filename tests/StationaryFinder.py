@@ -6,15 +6,15 @@
 # Run the script
 
 # pk8.getAbilityString() == 1/2/"H"
-# Util.STRINGS.natures[pk8.nature()] == "Nature"
+# Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == "Nature"
 # pk8.shinyString() == "None"/"Star"/"Square" (!= "None" for both star/square)
 # pk8.IVs == spread_name (spread_name = [x,x,x,x,x,x])
-# Util.GenderSymbol[pk8.gender()] == "♂"/"♀"/"-"
+# Util(GameVersion.SWSH).GenderSymbol[pk8.gender()] == "♂"/"♀"/"-"
 
 import signal, sys, json
-from structure import PK8
+from lookups import Util, GameVersion
 from nxbot import SWSHBot
-from lookups import Util
+from structure import PK8
 
 # Go to root of PyNXBot
 sys.path.append("../")
@@ -63,7 +63,7 @@ while True:
             b.pause(0.5)
             print(pk8.toString())
 
-            if Util.STRINGS.natures[pk8.nature()] == "Timid" or pk8.shinyString() != "None":
+            if Util(GameVersion.SWSH).STRINGS.natures[pk8.nature()] == "Timid" or pk8.shinyString() != "None":
                 found = True
 
             break

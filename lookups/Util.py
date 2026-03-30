@@ -17,7 +17,7 @@ class Util():
 
     @staticmethod
     def translate(lang):
-        Util.STRINGS = PKMString(lang)
+        Util(GameVersion.SWSH).STRINGS = PKMString(lang)
 
     @staticmethod
     def convertImage(filename):
@@ -79,8 +79,8 @@ class Util():
                 if hsv[3] == 0:
                     continue
 
-                HVB = Util.convert2HVB(hsv)
-                idx = Util.findinlist(HVB, Colorlist)
+                HVB = Util(GameVersion.SWSH).convert2HVB(hsv)
+                idx = Util(GameVersion.SWSH).findinlist(HVB, Colorlist)
 
                 if idx < 0:
                     Colorlist = numpy.append(Colorlist, [HVB], axis = 0)

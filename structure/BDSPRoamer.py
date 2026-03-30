@@ -1,5 +1,5 @@
-from structure.ByteStruct import ByteStruct
 from rng import Generator
+from structure.ByteStruct import ByteStruct
 
 class BDSPRoamer(ByteStruct):
     def __init__(self,buf,TID,SID):
@@ -17,10 +17,10 @@ class BDSPRoamer(ByteStruct):
         return self.getbyte((0x20 * index) + 0x14)
 
     def toString(self):
-        from lookups import Util
+        from lookups import Util, GameVersion
 
         for i in range(2):
             r = Generator(0, self.ec(i), self.TID, self.SID, "r", 3)
-            print(f"Species: {Util.STRINGS.species[self.species(i)]}\tHP: {self.hp(i)}")
+            print(f"Species: {Util(GameVersion.SWSH).STRINGS.species[self.species(i)]}\tHP: {self.hp(i)}")
             r.print()
             print()

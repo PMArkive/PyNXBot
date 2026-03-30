@@ -3,8 +3,8 @@ import signal, sys, json
 # Go to root/test of PyNXBot
 sys.path.append("../")
 
-from lookups import Util
-from rng import XORSHIFT,Generator
+from lookups import Util, GameVersion
+from rng import XORSHIFT, Generator
 from nxbot import BDSPBot
 
 # CTRL+C handler
@@ -45,7 +45,7 @@ while True:
         r = Generator(tmpRNG.state(), tmpRNG.next(), b.TrainerSave.TID(), b.TrainerSave.SID(), encounterType, 3)
 
         if usefilters:
-            if r.ShinyType != "None" and (r.IVs == A0 or r.IVs == V6): #and Util.STRINGS.natures[r.Nature] == "Adamant" and (r.IVs == V6 or  or r.IVs == S0):
+            if r.ShinyType != "None" and (r.IVs == A0 or r.IVs == V6): #and Util(GameVersion.SWSH).STRINGS.natures[r.Nature] == "Adamant" and (r.IVs == V6 or  or r.IVs == S0):
                 print(f"\nAdvances: {i}")
                 r.print()
                 print()
