@@ -1,20 +1,20 @@
+import signal, sys, json
+
 # Go to root/test of PyNXBot
-import signal
-import sys
-import json
-sys.path.append('../')
+sys.path.append("../")
 
 from rng import XORSHIFT
 from nxbot import BDSPEggBot
 
-config = json.load(open("../config.json"))
-b = BDSPEggBot(config["IP"])
-
-def signal_handler(signal, advances): #CTRL+C handler
+# CTRL+C handler
+def signal_handler(signal, advances):
     print("Stop request")
     b.close()
 
 signal.signal(signal.SIGINT, signal_handler)
+
+config = json.load(open("../config.json"))
+b = BDSPEggBot(config["IP"])
 
 r = XORSHIFT(b.getSeed())
 seed = r.state()
@@ -35,11 +35,13 @@ trainercardOpened = False
 scrolls = 0
 targetAdvances = 0
 botFlag = input("Press D-pad Down at a specific advance? (y/n) ")
+
 if botFlag == "y" or botFlag == "Y":
     botFlag = True
     targetAdvances = int(input("Input the target advance: "))
 else:
     botFlag = False
+
 print("\n")
 
 while True:

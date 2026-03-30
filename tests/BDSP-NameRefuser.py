@@ -1,20 +1,20 @@
+import signal, sys, json
+
 # Go to root/test of PyNXBot
-import signal
-import sys
-import json
-sys.path.append('../')
+sys.path.append("../")
 
 from rng import XORSHIFT
 from nxbot import BDSPIDsBot
 
-config = json.load(open("../config.json"))
-b = BDSPIDsBot(config["IP"])
-
-def signal_handler(signal, advances): #CTRL+C handler
+# CTRL+C handler
+def signal_handler(signal, advances):
     print("Stop request")
     b.close()
 
 signal.signal(signal.SIGINT, signal_handler)
+
+config = json.load(open("../config.json"))
+b = BDSPIDsBot(config["IP"])
 
 r = XORSHIFT(b.getSeed())
 seed = r.state()
@@ -28,11 +28,13 @@ reachedTarget = False
 refuses = 0
 targetAdvances = 0
 botFlag = input("Advance until target? (y/n) ")
+
 if botFlag == "y" or botFlag == "Y":
     botFlag = True
     targetAdvances = int(input("Input the target advance: "))
 else:
     botFlag = False
+
 print("\n")
 
 while True:
@@ -52,6 +54,7 @@ while True:
                 for i in range(2):
                     b.click("HOME")
                     b.pause(0.2)
+
                 reachedTarget = True
 
     if not reachedTarget:

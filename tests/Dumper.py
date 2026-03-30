@@ -1,12 +1,12 @@
+import sys, json
+
 # Go to root of PyNXBot
-import sys
-sys.path.append('../')
+sys.path.append("../")
+
 from nxbot import SWSHBot
-import json
 
-DumpPath = 'Event/PersonalDump/'
+DumpPath = "Event/PersonalDump/"
 config = json.load(open("../config.json"))
-
 b = SWSHBot(config["IP"])
 
 print("Dumping bonus_rewards...")
@@ -23,5 +23,4 @@ print("Dumping normal_encount_rigel2...")
 b.readEventBlock_RaidEncounter_CT(DumpPath)
 
 print("\nDump completed!\n")
-
 b.close()

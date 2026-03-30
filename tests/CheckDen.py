@@ -1,17 +1,7 @@
-# Desired IVs
-V6 = [31,31,31,31,31,31]
-S0 = [31,31,31,31,31,00]
-A0 = [31,00,31,31,31,31]
-
-useFilters = True
-MaxResults = 1000
-doResearch = True
+import signal, sys, json
 
 # Go to root of PyNXBot
-import signal
-import sys
-import json
-sys.path.append('../')
+sys.path.append("../")
 
 from lookups import Util
 from nxbot import RaidBot
@@ -22,11 +12,19 @@ def signal_handler(signal, frame): #CTRL+C handler
     print("Stop request")
     b.close()
 
+signal.signal(signal.SIGINT, signal_handler)
+
 config = json.load(open("../config.json"))
 b = RaidBot(config["IP"])
 
-signal.signal(signal.SIGINT, signal_handler)
+# Desired IVs
+V6 = [31, 31, 31, 31, 31, 31]
+S0 = [31, 31, 31, 31, 31, 0]
+A0 = [31, 0, 31, 31, 31, 31]
 
+useFilters = True
+MaxResults = 1000
+doResearch = True
 seed = None
 
 for ii in range(RaidBot.DENCOUNT):
@@ -36,44 +34,54 @@ for ii in range(RaidBot.DENCOUNT):
         den = Den(b.readDen(ii + 11))
     else:
         den = Den(b.readDen(ii))
+
     if den.isActive():
-        spawn = den.getSpawn(denID = ii, isSword = b.isPlayingSword)
+        spawn = den.getSpawn(denID=ii, isSword=b.isPlayingSword)
         currShinyLock = 0
+
         if ii > 189:
             info = f"[CT] denID: {ii-189}"
         elif ii > 99:
             info = f"[IoA] denID: {ii-99}"
         else:
             info = f"denID: {ii+1}"
+
         info += f"    {den.stars()}★    Species: {Util.STRINGS.species[spawn.Species()]}"
+
         if spawn.IsGigantamax():
             info += " G-Max"
+
         if den.isEvent():
             info += "    Event"
             currShinyLock = spawn.ShinyFlag()
+
         if den.isWishingPiece():
             if currShinyLock != 2:
                 info += f"    Next Shiny Frame: {Raid.getNextShinyFrame(den.seed())}"
             else:
                 info += f"    Next Shiny Frame: 0"
+
             seed = den.seed()
             info = "!!! " + info
             piecedSpawn = spawn
             piecedShinyLock = currShinyLock
+
         print(info)
-        r = Raid(seed = den.seed(), TID = b.TID, SID = b.SID, flawlessiv = spawn.FlawlessIVs(), shinyLock = currShinyLock, ability = spawn.Ability(), gender = spawn.Gender(), species = spawn.Species(), altform = spawn.AltForm())
+        r = Raid(seed=den.seed(), TID=b.TID, SID=b.SID, flawlessiv=spawn.FlawlessIVs(), shinyLock=currShinyLock, ability=spawn.Ability(), gender=spawn.Gender(), species=spawn.Species(), altform=spawn.AltForm())
         r.print()
         print()
 
 # Choose RNGable den to calculate frames
 if seed is not None and doResearch:
-    print('\nWishing Piece Den Prediction:\n')
+    print("\nWishing Piece Den Prediction:\n")
     i = 0
+
     while i < MaxResults:
-        r = Raid(seed, TID = b.TID, SID = b.SID, flawlessiv = piecedSpawn.FlawlessIVs(), shinyLock = piecedShinyLock, ability = piecedSpawn.Ability(), gender = piecedSpawn.Gender(), species = piecedSpawn.Species(), altform = piecedSpawn.AltForm())
+        r = Raid(seed, TID=b.TID, SID=b.SID, flawlessiv=piecedSpawn.FlawlessIVs(), shinyLock=piecedShinyLock, ability=piecedSpawn.Ability(), gender=piecedSpawn.Gender(), species=piecedSpawn.Species(), altform=piecedSpawn.AltForm())
         seed = XOROSHIRO(seed).next()
+
         if useFilters:
-            if (r.ShinyType != 'None' or r.IVs == V6 or r.IVs == S0 or r.IVs == A0) and Util.STRINGS.natures[r.Nature] == 'Careful':
+            if (r.ShinyType != "None" or r.IVs == V6 or r.IVs == S0 or r.IVs == A0) and Util.STRINGS.natures[r.Nature] == "Careful":
                 print(f"Frame:{i}")
                 r.print()
                 print()
@@ -81,6 +89,7 @@ if seed is not None and doResearch:
             print(f"Frame:{i}")
             r.print()
             print()
+
         i += 1
 
 b.close()

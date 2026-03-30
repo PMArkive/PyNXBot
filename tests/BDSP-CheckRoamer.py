@@ -1,7 +1,7 @@
+import sys, json
+
 # Go to root of PyNXBot
-import sys
-import json
-sys.path.append('../')
+sys.path.append("../")
 
 from nxbot import BDSPBot
 from structure import BDSPRoamer
@@ -14,5 +14,6 @@ while True:
     roamer8.toString()
     stop = input("Check again? (y/n): ")
     print()
-    if stop == 'n' or stop == 'N':
+
+    if stop == "n" or stop == "N":
         b.close()

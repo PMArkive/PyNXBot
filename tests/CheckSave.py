@@ -1,7 +1,7 @@
+import sys, json
+
 # Go to root of PyNXBot
-import sys
-import json
-sys.path.append('../')
+sys.path.append("../")
 
 from nxbot import SWSHBot
 
