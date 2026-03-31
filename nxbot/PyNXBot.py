@@ -235,6 +235,7 @@ class SWSHBot(NXBot):
 
     def __init__(self, ip, port=6000):
         NXBot.__init__(self, ip, port)
+
         from structure import MyStatus8
 
         self.TrainerSave = MyStatus8(self.readTrainerBlock())
@@ -497,14 +498,15 @@ class BDSPBot(NXBot):
         self.wildPkmn = self.POINTERS[self.titleID][self.buildID]["WildPkmn"]
         self.partyPkmn = self.POINTERS[self.titleID][self.buildID]["PartyPkmn"]
         print(f"Game: {self.game}    Version: {self.version}\n")
+
         from structure import MyStatusBDSP
 
         self.TrainerSave = MyStatusBDSP(self.readTrainerBlock())
-        print(
-            f"G8TID: {self.TrainerSave.displayID()}    TID: {self.TrainerSave.TID()}    SID: {self.TrainerSave.SID()}\n"
-        )
         self.TID = self.TrainerSave.TID()
         self.SID = self.TrainerSave.SID()
+        print(
+            f"G8TID: {self.TrainerSave.displayID()}    TID: {self.TID}    SID: {self.SID}\n"
+        )
 
     def getSeed(self):
         seed = self.read_pointer(f"[main+{self.mainRng:X}]", 16)
@@ -563,61 +565,73 @@ class FRLGBot(NXBot):
             "Game": "FireRed (JPN)",
             "VBlankCounter": 0xBD68B304,
             "CurrentSeedAddress": 0xBD68D230,
+            "PartyStartAddress": 0x120C1E0,
         },
         0x100F1E0233FA000: {
             "Game": "LeafGreen (JPN)",
             "VBlankCounter": 0xBD68B304,
             "CurrentSeedAddress": 0xBD68D230,
+            "PartyStartAddress": 0x120C1E0,
         },
         0x100554023408000: {
             "Game": "FireRed (ENG)",
             "VBlankCounter": 0xBD68B3A4,
             "CurrentSeedAddress": 0xBD68D2D0,
+            "PartyStartAddress": 0x120C280,
         },
         0x10034D02340E000: {
             "Game": "LeafGreen (ENG)",
             "VBlankCounter": 0xBD68B3A4,
             "CurrentSeedAddress": 0xBD68D2D0,
+            "PartyStartAddress": 0x120C280,
         },
         0x1004B3023412000: {
             "Game": "FireRed (FRE)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x10087C02342E000: {
             "Game": "LeafGreen (FRE)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x10092302342A000: {
             "Game": "FireRed (ITA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x1005C7023432000: {
             "Game": "LeafGreen (ITA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x1007F8023416000: {
             "Game": "FireRed (GER)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x100FD6023430000: {
             "Game": "LeafGreen (GER)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x100EB702342C000: {
             "Game": "FireRed (SPA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
         0x1002B5023434000: {
             "Game": "LeafGreen (SPA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
+            "PartyStartAddress": 0x120C280,
         },
     }
 
@@ -633,26 +647,50 @@ class FRLGBot(NXBot):
             self.close()
 
         self.game = self.ADDRESSES[self.titleID]["Game"]
-        self.curentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
+        self.initiaSeedAddress = 0x1208000
+        self.currentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
         self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
+        self.partyStartAddress = self.ADDRESSES[self.titleID]["PartyStartAddress"]
         print(f"Game: {self.game}\n")
 
+        from structure import MyStatus3
+
+        self.TrainerSave = MyStatus3(self.readTrainerBlock())
+        self.TID = self.TrainerSave.TID()
+        self.SID = self.TrainerSave.SID()
+        print(f"TID: {self.TID}    SID: {self.SID}\n")
+
     def getInitialSeed(self):
-        return int.from_bytes(self.read(0x1208000, 2), "little")
+        return int.from_bytes(self.read(self.initiaSeedAddress, 2), "little")
 
     def getCurrentSeed(self):
-        return int.from_bytes(self.read(self.curentSeedAddress, 4), "little")
+        return int.from_bytes(self.read(self.currentSeedAddress, 4), "little")
 
     def getVBlankCounter(self):
         return int.from_bytes(self.read(self.VBlankCounter, 4), "little")
 
     def isBoxPointerInitialized(self):
         return (
-            int.from_bytes(self.read(self.curentSeedAddress + 0x10, 4), "little") != 0
+            int.from_bytes(self.read(self.currentSeedAddress + 0x10, 4), "little") != 0
         )
 
-    """def readTrainerBlock(self):
-            return self.read(0x45061108, 0x110)
+    def readTrainerBlock(self):
+        return self.read(
+            int.from_bytes(self.read(self.currentSeedAddress + 0xC, 4), "little")
+            - 0x2020000
+            + self.initiaSeedAddress,
+            0x18,
+        )
+
+    def readParty(self, slot=1):
+        if slot > 6:
+            slot = 6
+
+        address = self.partyStartAddress + (slot - 1) * self.PK3FRLGPARTYSIZE
+
+        return self.read(address, self.PK3FRLGPARTYSIZE)
+
+    """
 
         def readParty(self,slot=1):
             if slot > 5:
