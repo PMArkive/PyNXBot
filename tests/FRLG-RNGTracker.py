@@ -18,9 +18,9 @@ config = json.load(open("../config.json"))
 b = FRLGBot(config["IP"])
 
 r = LCRNG(b.getInitialSeed())
-initialSeed = r.initial_seed()
+initialSeed = r.initial_state()
 currentSeed = r.state()
-advances = 0
+advances = r.lcrng_distance(currentSeed)
 
 print()
 print(f"Initial Seed: {initialSeed:04X}")
@@ -63,4 +63,4 @@ while True:
                 b.click("A")
                 b.pause(0.2)"""
 
-    b.pause(0.02)
+    b.pause(0.002)
