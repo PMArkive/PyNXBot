@@ -141,6 +141,7 @@ class Egg(FrameGenerator):
             Male = parent2
 
         base = Male if Female.species() == 132 else Female
+
         from lookups import Util, GameVersion
 
         parentpi = Util(GameVersion.SWSH).PT.getFormeEntry(
@@ -521,6 +522,7 @@ class Raid(FrameGenerator):
     def getseeds(EC, PID, IVs):
         result = []
         seeds = XOROSHIRO.find_seeds(EC, PID)
+
         if len(seeds) > 0:
             for iv_count in range(IVs.count(31) + 1):
                 for seed in seeds:
@@ -533,6 +535,7 @@ class Raid(FrameGenerator):
             return result
 
         seedsXor = XOROSHIRO.find_seeds(EC, PID ^ 0x10000000)  # Check for shiny lock
+
         if len(seedsXor) > 0:
             for iv_count in range(IVs.count(31) + 1):
                 for seed in seeds:

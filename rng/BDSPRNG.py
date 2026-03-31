@@ -12,6 +12,7 @@ class XORSHIFT(object):
         t ^= t >> 8
         t ^= s ^ (s >> 19)
         self.seed = [self.seed[1], self.seed[2], self.seed[3], t]
+
         return ((t % 0xFFFFFFFF) + 0x80000000) & 0xFFFFFFFF
 
     def quickrand1(self, mask):
