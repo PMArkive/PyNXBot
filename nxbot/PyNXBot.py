@@ -647,7 +647,7 @@ class FRLGBot(NXBot):
             self.close()
 
         self.game = self.ADDRESSES[self.titleID]["Game"]
-        self.initiaSeedAddress = 0x1208000
+        self.initialSeedAddress = 0x1208000
         self.currentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
         self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
         self.partyStartAddress = self.ADDRESSES[self.titleID]["PartyStartAddress"]
@@ -661,7 +661,7 @@ class FRLGBot(NXBot):
         print(f"TID: {self.TID}    SID: {self.SID}\n")
 
     def getInitialSeed(self):
-        return int.from_bytes(self.read(self.initiaSeedAddress, 2), "little")
+        return int.from_bytes(self.read(self.initialSeedAddress, 2), "little")
 
     def getCurrentSeed(self):
         return int.from_bytes(self.read(self.currentSeedAddress, 4), "little")
@@ -678,7 +678,7 @@ class FRLGBot(NXBot):
         return self.read(
             int.from_bytes(self.read(self.currentSeedAddress + 0xC, 4), "little")
             - 0x2020000
-            + self.initiaSeedAddress,
+            + self.initialSeedAddress,
             0x18,
         )
 
