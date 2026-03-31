@@ -566,72 +566,84 @@ class FRLGBot(NXBot):
             "VBlankCounter": 0xBD68B304,
             "CurrentSeedAddress": 0xBD68D230,
             "PartyStartAddress": 0x120C1E0,
+            "WildAddress": 0x120BF88,
         },
         0x100F1E0233FA000: {
             "Game": "LeafGreen (JPN)",
             "VBlankCounter": 0xBD68B304,
             "CurrentSeedAddress": 0xBD68D230,
             "PartyStartAddress": 0x120C1E0,
+            "WildAddress": 0x120BF88,
         },
         0x100554023408000: {
             "Game": "FireRed (ENG)",
             "VBlankCounter": 0xBD68B3A4,
             "CurrentSeedAddress": 0xBD68D2D0,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x10034D02340E000: {
             "Game": "LeafGreen (ENG)",
             "VBlankCounter": 0xBD68B3A4,
             "CurrentSeedAddress": 0xBD68D2D0,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x1004B3023412000: {
             "Game": "FireRed (FRE)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x10087C02342E000: {
             "Game": "LeafGreen (FRE)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x10092302342A000: {
             "Game": "FireRed (ITA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x1005C7023432000: {
             "Game": "LeafGreen (ITA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x1007F8023416000: {
             "Game": "FireRed (GER)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x100FD6023430000: {
             "Game": "LeafGreen (GER)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x100EB702342C000: {
             "Game": "FireRed (SPA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
         0x1002B5023434000: {
             "Game": "LeafGreen (SPA)",
             "VBlankCounter": 0xBD68B2F4,
             "CurrentSeedAddress": 0xBD68D220,
             "PartyStartAddress": 0x120C280,
+            "WildAddress": 0x120C028,
         },
     }
 
@@ -651,6 +663,7 @@ class FRLGBot(NXBot):
         self.currentSeedAddress = self.ADDRESSES[self.titleID]["CurrentSeedAddress"]
         self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
         self.partyStartAddress = self.ADDRESSES[self.titleID]["PartyStartAddress"]
+        self.wildAddress = self.ADDRESSES[self.titleID]["WildAddress"]
         print(f"Game: {self.game}\n")
 
         from structure import MyStatus3
@@ -689,6 +702,9 @@ class FRLGBot(NXBot):
         address = self.partyStartAddress + (slot - 1) * self.PK3FRLGPARTYSIZE
 
         return self.read(address, self.PK3FRLGPARTYSIZE)
+
+    def readWild(self):
+        return self.read(self.wildAddress, self.PK3FRLGPARTYSIZE)
 
     """
 
