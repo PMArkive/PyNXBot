@@ -40,6 +40,11 @@ class PKMString(object):
         ) as file:
             self.forms = file.read().splitlines()
 
+        with open(
+            f"{currentfolder}/text_Status_{lang}.txt", "r", encoding="utf8"
+        ) as file:
+            self.status = file.read().splitlines()
+
         if lang == "zh" or lang == "en":  # for table
             with open(
                 f"{currentfolder}/text_TRTypes_{lang}.txt", "r", encoding="utf8"

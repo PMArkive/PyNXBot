@@ -103,6 +103,7 @@ class PK3(ByteStruct):
 
     def ivs(self):
         iv32 = self.iv32()
+
         return [
             iv32 & 0x1F,
             (iv32 >> 5) & 0x1F,

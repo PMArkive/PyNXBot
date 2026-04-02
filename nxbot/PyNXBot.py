@@ -692,7 +692,7 @@ class FRLGBot(NXBot):
             int.from_bytes(self.read(self.currentSeedAddress + 0xC, 4), "little")
             - 0x2020000
             + self.initialSeedAddress,
-            0x18,
+            24,
         )
 
     def readParty(self, slot=1):
@@ -705,6 +705,15 @@ class FRLGBot(NXBot):
 
     def readWild(self):
         return self.read(self.wildAddress, self.PK3FRLGPARTYSIZE)
+
+    def readRoamerBlock(self):
+        return self.read(
+            int.from_bytes(self.read(self.currentSeedAddress + 0x8, 4), "little")
+            - 0x2020000
+            + self.initialSeedAddress
+            + 0x30D0,
+            28,
+        )
 
     """
 

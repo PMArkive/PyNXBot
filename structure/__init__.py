@@ -32,3 +32,4 @@ from .MyStatusBDSP import MyStatusBDSP
 from .BDSPRoamer import BDSPRoamer
 
 from .MyStatus3 import MyStatus3
+from .G3Roamer import G3Roamer
