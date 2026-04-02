@@ -703,6 +703,27 @@ class FRLGBot(NXBot):
 
         return self.read(address, self.PK3FRLGPARTYSIZE)
 
+    def readBox(self, box=1, slot=1):
+        if box > 14:
+            box = 14
+
+        if slot > 30:
+            slot = 30
+
+        address = (
+            int.from_bytes(self.read(self.currentSeedAddress + 0x10, 4), "little")
+            - 0x2020000
+            + self.initialSeedAddress
+            + 0x4
+        )
+
+        return self.read(
+            address
+            + ((box - 1) * 30 * self.PK3FRLGBOXSIZE)
+            + ((slot - 1) * self.PK3FRLGBOXSIZE),
+            self.PK3FRLGBOXSIZE,
+        )
+
     def readWild(self):
         return self.read(self.wildAddress, self.PK3FRLGPARTYSIZE)
 
