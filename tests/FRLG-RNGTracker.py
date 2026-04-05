@@ -26,14 +26,16 @@ print()
 print(f"Initial Seed: {initialSeed:04X}")
 print()
 
-"""targetAdvances = 0
+targetAdvances = 0
 botFlag = input("Press A at a specific advance? (y/n) ")
+
 if botFlag == "y" or botFlag == "Y":
     botFlag = True
     targetAdvances = int(input("Input the target advance: "))
 else:
     botFlag = False
-print("\n")"""
+
+print("\n")
 
 while True:
     initialSeed = b.getInitialSeed()
@@ -53,14 +55,9 @@ while True:
         print(f"Advances: {advances}")
         print()
 
-        if advances == 2558:
-            for i in range(5):
-                b.click("A")
-                b.pause(0.2)
-
-    """if botFlag and advances == targetAdvances:
-            for i in range(5):
-                b.click("A")
-                b.pause(0.2)"""
+    if botFlag and advances == targetAdvances:
+        for i in range(5):
+            b.click("A")
+            b.pause(0.2)
 
     b.pause(0.002)
