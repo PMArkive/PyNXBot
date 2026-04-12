@@ -19,11 +19,13 @@ b = FRLGBot(config["IP"])
 
 r = LCRNG(b.getInitialSeed())
 initialSeed = r.initial_state()
-currentSeed = r.state()
+currentSeed = b.getCurrentSeed()
 advances = r.lcrng_distance(currentSeed)
 
 print()
 print(f"Initial Seed: {initialSeed:04X}")
+print(f"Current Seed: {currentSeed:08X}")
+print(f"Advances: {advances}")
 print()
 
 targetAdvances = 0
