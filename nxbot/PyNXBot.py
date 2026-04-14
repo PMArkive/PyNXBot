@@ -664,6 +664,8 @@ class FRLGBot(NXBot):
         self.VBlankCounter = self.ADDRESSES[self.titleID]["VBlankCounter"]
         self.partyStartAddress = self.ADDRESSES[self.titleID]["PartyStartAddress"]
         self.wildAddress = self.ADDRESSES[self.titleID]["WildAddress"]
+        self.catchCheckFlag = 0x11ED4C4
+        self.catchBallShakes = 0x11ED50C
         print(f"Game: {self.game}\n")
 
         from structure import MyStatus3
@@ -736,31 +738,8 @@ class FRLGBot(NXBot):
             28,
         )
 
-    """
+    def readCatchCheckFlag(self):
+        return int.from_bytes(self.read(self.catchCheckFlag, 1), "little") == 0x40
 
-        def readParty(self,slot=1):
-            if slot > 5:
-                    slot = 5
-            address = 0x450BE8C0 + slot * self.PK3FRLGPARTYSIZE
-
-            return self.read(address, self.PK3FRLGPARTYSIZE)
-
-        def readBox(self,box = 0,slot = 0):
-            if box > 13:7
-                box = 13
-
-            if slot > 29:
-                slot = 29
-
-            address = 0x4506D890 + box * 30 + slot * self.PK3FRLGBOXSIZE
-
-            return self.read(address, self.PK3FRLGBOXSIZE)
-
-        def readTrade(self):
-            return self.read(0xAF285F68, self.PK3FRLGPARTYSIZE)
-
-        def readWild(self):
-            return self.read(0x8FEA3358, self.PK3FRLGPARTYSIZE)
-
-        def readLegend(self):
-            return self.read(0x886BC058, self.PK3FRLGPARTYSIZE)"""
+    def readCatchBallShakes(self):
+        return int.from_bytes(self.read(self.catchBallShakes, 1), "little")

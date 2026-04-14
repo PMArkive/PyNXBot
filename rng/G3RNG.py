@@ -9,7 +9,7 @@ class LCRNG(object):
     def state(self):
         return self.seed
 
-    def next(self, mul, add):
+    def next(self, mul=0x41C64E6D, add=0x6073):
         self.seed = (self.seed * mul + add) & 0xFFFFFFFF
 
         return self.seed
